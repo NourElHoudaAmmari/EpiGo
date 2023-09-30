@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "109178811801",
+    "project_id": "epigo-8f971",
+    "storage_bucket": "epigo-8f971.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:109178811801:android:85d6f39d18d2d2bb128f08",
+        "android_client_info": {
+          "package_name": "com.example.epigo_project"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCOPOM2lbDR921rGf8uBqmjilaIUlA5qjs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

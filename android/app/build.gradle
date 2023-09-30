@@ -24,9 +24,10 @@ if (flutterVersionName == null) {
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
+apply plugin:'com.google.gms.google-services'
 
 android {
-    compileSdkVersion flutter.compileSdkVersion
+    compileSdkVersion 33
     ndkVersion flutter.ndkVersion
 
     compileOptions {
@@ -47,8 +48,8 @@ android {
         applicationId "com.example.epigo_project"
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
-        minSdkVersion flutter.minSdkVersion
-        targetSdkVersion flutter.targetSdkVersion
+        minSdkVersion 22
+        targetSdkVersion 30
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
     }
@@ -60,6 +61,12 @@ android {
             signingConfig signingConfigs.debug
         }
     }
+    lintOptions {
+        disable 'InvalidPackage'
+        // Ajoutez les options suivantes
+        warning 'unchecked'
+        warning 'deprecation'
+    }
 }
 
 flutter {
@@ -68,4 +75,8 @@ flutter {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation platform("com.google.firebase:firebase-bom:32.3.1")
+       implementation 'com.google.firebase:firebase-analytics'
+     implementation 'com.facebook.android:facebook-login:latest.release'
+    
 }
