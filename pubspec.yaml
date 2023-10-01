@@ -67,6 +67,7 @@ dependencies:
   emoji_picker_flutter: ^1.6.1
   flutter_notification_channel: ^2.0.0
   gallery_saver: ^2.3.2
+  intl_phone_field: ^3.2.0
   
 
 dev_dependencies:
