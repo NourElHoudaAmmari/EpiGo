@@ -2,7 +2,7 @@
 import 'package:epigo_project/config/constants.dart';
 import 'package:epigo_project/screens/Signup/components/or_divider.dart';
 import 'package:epigo_project/screens/Forget_Password/forgot_password.dart';
-import 'package:epigo_project/screens/Home_Page/home_screen.dart';
+import 'package:epigo_project/screens/Home_Screen/home_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -51,7 +51,6 @@ bool _isPasswordVisible = false;
   // Once signed in, return the UserCredential
   return await FirebaseAuth.instance.signInWithCredential(credential);
 }
-@override
 void init() {
   super.initState;
 
@@ -63,7 +62,7 @@ void init() {
 
     // If the user is already logged in, navigate to the home page
     if (isLoggedIn) {
-      WidgetsBinding.instance?.addPostFrameCallback((_) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => HomeScreen()),

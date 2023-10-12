@@ -1,6 +1,6 @@
 import 'package:epigo_project/config/constants.dart';
 import 'package:epigo_project/screens/Signup/components/or_divider.dart';
-import 'package:epigo_project/screens/Home_Page/home_screen.dart';
+import 'package:epigo_project/screens/Home_Screen/home_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
