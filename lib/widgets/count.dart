@@ -6,10 +6,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class Count extends StatefulWidget {
-    String productName;
+  String productName;
   String productImage;
   String productId;
   int productPrice;
+  String productDescription;
   var productUnit;
 
   Count({
@@ -18,11 +19,10 @@ class Count extends StatefulWidget {
     required this.productId,
     required this.productImage,
     required this.productPrice,
+    required this.productDescription,
   });
-  //const Count({super.key});
-
   @override
-  State<Count> createState() => _CountState();
+  _CountState createState() => _CountState();
 }
 
 class _CountState extends State<Count> {
@@ -90,7 +90,7 @@ class _CountState extends State<Count> {
                   },
                   child: Icon(
                     Icons.remove,
-                    size: 15,
+                    size: 18,
                     color: Color(0xffd0b84c),
                   ),
                 ),
@@ -116,7 +116,7 @@ class _CountState extends State<Count> {
                   },
                   child: Icon(
                     Icons.add,
-                    size: 15,
+                    size: 18,
                     color: Color(0xffd0b84c),
                   ),
                 ),
@@ -138,7 +138,7 @@ class _CountState extends State<Count> {
                   );
                 },
                 child: Text(
-                  "ADD",
+                  "Ajout",
                   style: TextStyle(color: primaryColor),
                 ),
               ),

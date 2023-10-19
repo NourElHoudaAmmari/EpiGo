@@ -6,10 +6,10 @@ import 'package:flutter/cupertino.dart';
 class ReviewCartProvider with ChangeNotifier {
   void addReviewCartData({
     String? cartId,
-    String? cartName,
-    String? cartImage,
-    int? cartPrice,
-    int? cartQuantity,
+    required String cartName,
+    required String cartImage,
+    required int cartPrice,
+    required  cartQuantity,
     var cartUnit,
   }) async {
     FirebaseFirestore.instance

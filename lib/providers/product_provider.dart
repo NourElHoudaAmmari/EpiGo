@@ -16,6 +16,7 @@ class ProductProvider with ChangeNotifier {
       productPrice: element.get("productPrice"),
       productId: element.get("productId"),
       productUnit: element.get("productUnit"),
+      productDescription: element.get("productDescription"),
     );
     search.add(productModel);
   }
@@ -25,6 +26,7 @@ class ProductProvider with ChangeNotifier {
 
   fatchHerbsProductData() async {
     List<ProductModel> newList = [];
+  
 
     QuerySnapshot value =
         await FirebaseFirestore.instance.collection("HerbsProduct").get();
@@ -32,12 +34,14 @@ class ProductProvider with ChangeNotifier {
     value.docs.forEach(
       (element) {
         productModels(element);
+        print(productModel);
 
         newList.add(productModel);
       },
     );
     herbsProductList = newList;
     notifyListeners();
+    print(herbsProductList);
   }
 
   List<ProductModel> get getHerbsProductDataList {

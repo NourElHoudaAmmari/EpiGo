@@ -205,7 +205,7 @@ ListTile(
 ListTile(
   leading: Icon(Icons.power_settings_new),
   title: Text(
-    'Logout',
+    'Se déconnecter',
     style: TextStyle(
       fontSize: 18,
       color: Colors.red,

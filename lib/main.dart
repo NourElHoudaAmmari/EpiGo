@@ -1,4 +1,5 @@
 import 'package:epigo_project/config/constants.dart';
+import 'package:epigo_project/providers/product_provider.dart';
 import 'package:epigo_project/repository/authentification_repository.dart';
 import 'package:epigo_project/screens/Login/login_screen.dart';
 import 'package:epigo_project/screens/Welcome/welcome_screen.dart';
@@ -6,6 +7,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:provider/provider.dart';
+
+import 'providers/review_cart_provider.dart';
+import 'providers/wishList_provider.dart';
 
 
 void main()async {
@@ -24,7 +29,19 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   // This widget is the root of your application.
  @override
-  Widget build(BuildContext context)=>GetMaterialApp(
+  Widget build(BuildContext context)=>MultiProvider(
+    providers:[
+        ChangeNotifierProvider<ProductProvider>(
+        create: (context) => ProductProvider(),
+      ),
+       ChangeNotifierProvider<ReviewCartProvider>(
+          create: (context) => ReviewCartProvider(),
+        ),
+         ChangeNotifierProvider<WishListProvider>(
+          create: (context) => WishListProvider(),
+        ),
+    ],
+    child: GetMaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'EpiGo',
       theme: ThemeData(
@@ -58,7 +75,7 @@ class _MyAppState extends State<MyApp> {
       }),
    
      
-     
+    ),    
 );
 
 }

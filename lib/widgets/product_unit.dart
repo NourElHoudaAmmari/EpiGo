@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 
 class ProductUnit extends StatelessWidget {
-  final  VoidCallback  onTap;
+  final VoidCallback onTap;
   final String title;
   ProductUnit({required this.onTap,required this.title});
-
-
   @override
   Widget build(BuildContext context) {
-     return InkWell(
+    return InkWell(
       onTap: onTap,
       child: Container(
         padding: EdgeInsets.only(left: 5),
@@ -27,8 +25,8 @@ class ProductUnit extends StatelessWidget {
             Center(
               child: Icon(
                 Icons.arrow_drop_down,
-                size: 20,
-                color: Colors.yellow,
+                size: 22,
+                color: Color(0xffd0b84c),
               ),
             )
           ],

@@ -12,7 +12,8 @@ class SignalProduct extends StatefulWidget {
   late final VoidCallback onTap;
   late final String productId;
   late final ProductModel productUnit;
- SignalProduct({required this.productImage, required this.productName, required this.productPrice, required this.onTap, required this.productUnit});
+  late final String productDescription;
+ SignalProduct({required this.productId,required this.productImage, required this.productName, required this.productPrice,required this.productUnit,required this.productDescription, required this.onTap});
  // const SignalProduct({super.key});
 
   @override
@@ -24,7 +25,7 @@ class _SignalProductState extends State<SignalProduct> {
   var firstValue;
   @override
   Widget build(BuildContext context) {
-  widget.productUnit.productUnit.firstWhere((element) {
+ widget.productUnit.productUnit.firstWhere((element) {
       setState(() {
         firstValue = element;
       });
@@ -39,7 +40,7 @@ class _SignalProductState extends State<SignalProduct> {
             height: 230,
             width: 165,
             decoration: BoxDecoration(
-              color: Color(0xffd9dad9),
+              color: Color.fromARGB(255, 243, 243, 243),
               borderRadius: BorderRadius.circular(10),
             ),
             child: Column(
@@ -53,6 +54,7 @@ class _SignalProductState extends State<SignalProduct> {
                     width: double.infinity,
                     child: Image.network(
                       widget.productImage,
+                      fit: BoxFit.cover,
                     ),
                   ),
                 ),
@@ -72,7 +74,7 @@ class _SignalProductState extends State<SignalProduct> {
                           ),
                         ),
                         Text(
-                          '${widget.productPrice}\$/${unitData == null?firstValue:unitData}',
+                              '${widget.productPrice}\Dt/${unitData == null?firstValue:unitData}',
                           style: TextStyle(
                             color: Colors.grey,
                           ),
@@ -136,6 +138,7 @@ class _SignalProductState extends State<SignalProduct> {
                               productName: widget.productName,
                               productPrice: widget.productPrice,
                               productUnit: unitData == null?firstValue:unitData,
+                              productDescription: widget.productDescription,
                             ),
                           ],
                         ),
