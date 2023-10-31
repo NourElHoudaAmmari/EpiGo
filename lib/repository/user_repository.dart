@@ -2,7 +2,7 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:epigo_project/models/user_model.dart';
-import 'package:epigo_project/screens/Login/login_screen.dart';
+import 'package:epigo_project/screens/User/Login/login_screen.dart';
 import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';

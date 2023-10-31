@@ -1,8 +1,9 @@
 
-import 'package:epigo_project/screens/Cart/cart_screen.dart';
-import 'package:epigo_project/screens/Home_Screen/home_screen.dart';
-import 'package:epigo_project/screens/Profile/profile_screen.dart';
-import 'package:epigo_project/screens/Wishlist/favorite_screen.dart';
+import 'package:epigo_project/screens/User/Cart/cart_screen.dart';
+import 'package:epigo_project/screens/User/Home_Screen/home_screen.dart';
+
+import 'package:epigo_project/screens/User/Profile/profile_screen.dart';
+import 'package:epigo_project/screens/User/Wishlist/favorite_screen.dart';
 import 'package:get/get.dart';
 appRoutes() => [
       GetPage(

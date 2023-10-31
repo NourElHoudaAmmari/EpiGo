@@ -3,24 +3,25 @@ import 'package:epigo_project/controllers/cart_controller.dart';
 import 'package:epigo_project/screens/User/Cart/cart_screen.dart';
 import 'package:epigo_project/screens/User/Home_Screen/home_screen.dart';
 import 'package:epigo_project/screens/User/Profile/profile_screen.dart';
-import 'package:epigo_project/screens/User/Wishlist/favorite_screen.dart';
 import 'package:fluentui_icons/fluentui_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:unicons/unicons.dart';
 
-class NavigationMenu extends StatefulWidget {
-   NavigationMenu({super.key});
-  final CartController cartController = Get.put(CartController());
+class UserPage extends StatefulWidget {
+  UserPage({super.key});
+ final CartController cartController = Get.put(CartController());
+
   @override
-  State<NavigationMenu> createState() => _NavigationMenuState();
+  State<UserPage> createState() => _UserPageState();
 }
 
-class _NavigationMenuState extends State<NavigationMenu> {
+class _UserPageState extends State<UserPage> {
   static final List<Widget> _screens = [
     HomeScreen(),
+   // const CategoryScreen(),
     const CartScreen(),
-    FavoritesScreen(),
+   // FavoritesScreen(),
     ProfileScreen(),
   ];
   int _selectedIndex = 0;
@@ -45,21 +46,25 @@ class _NavigationMenuState extends State<NavigationMenu> {
         showSelectedLabels: false,
         showUnselectedLabels: false,
         selectedItemColor: Colors.blueGrey.shade900,
-        unselectedItemColor: Colors.grey,
+        unselectedItemColor: Colors.blueGrey,
         type: BottomNavigationBarType.fixed,
         items: [
           BottomNavigationBarItem(
               icon: Icon(FluentSystemIcons.ic_fluent_home_regular),
               activeIcon: Icon(FluentSystemIcons.ic_fluent_home_filled),
-              label: 'Accueil'),
+              label: 'Home'),
           BottomNavigationBarItem(
-              icon: Icon(Icons.shopping_bag),
+              icon: Icon(FluentSystemIcons.ic_fluent_search_regular),
+              activeIcon: Icon(FluentSystemIcons.ic_fluent_search_filled),
+              label: 'Category'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.shopping_cart_sharp),
               activeIcon: Icon(Icons.shopping_bag),
-              label: 'Panier'),
+              label: 'Cart'),
           BottomNavigationBarItem(
             icon: Icon(UniconsLine.heart),
             activeIcon: Icon(UniconsLine.heart_alt),
-            label: 'Favoirs',
+            label: 'Favorites',
           ),
           BottomNavigationBarItem(
             icon: Icon(UniconsLine.user),
@@ -76,7 +81,7 @@ class _NavigationMenuState extends State<NavigationMenu> {
   BadgeIcon({
     Key? key,
   }) : super(key: key);
-  final CartController cartController = Get.find();
+ final CartController cartController = Get.find();
   @override
   Widget build(BuildContext context) {
     return Obx(() => cartController.products.length > 0
