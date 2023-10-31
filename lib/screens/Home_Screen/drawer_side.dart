@@ -1,12 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:epigo_project/repository/authentification_repository.dart';
 import 'package:epigo_project/repository/user_repository.dart';
+import 'package:epigo_project/screens/Cart/cart_screen.dart';
 import 'package:epigo_project/screens/Home_Screen/home_screen.dart';
 import 'package:epigo_project/screens/Login/components/login_form.dart';
 import 'package:epigo_project/screens/Login/login_screen.dart';
-import 'package:epigo_project/screens/My_profile/my_profile.dart';
-import 'package:epigo_project/screens/Review_cart/review_cart.dart';
-import 'package:epigo_project/screens/Wishlist/wishlist.dart';
+import 'package:epigo_project/screens/Profile/profile_screen.dart';
+import 'package:epigo_project/screens/Wishlist/favorite_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -58,9 +58,9 @@ void getUserData() async {
     if (userEmail != null) {
       final user = await _userRepo.getUserDetails(userEmail);
       setState(() {
-        name = user.name;
+        name = user.name!;
         email = userEmail;
-        imageUrl = user.profilePick;
+        imageUrl = user.profilePick!;
       });
     } 
   }
@@ -148,7 +148,7 @@ ListTile(
   onTap:(){
      Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) =>ReviewCart()),
+              MaterialPageRoute(builder: (context) =>CartScreen()),
             );
   },
 ),
@@ -163,7 +163,7 @@ ListTile(
   onTap: (){
       Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => MyProfile()),
+              MaterialPageRoute(builder: (context) => ProfileScreen()),
             );
   },
 ),
@@ -198,7 +198,7 @@ ListTile(
   onTap: (){
      Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => Wishlist()),
+              MaterialPageRoute(builder: (context) => FavoritesScreen()),
             );
   },
 ),

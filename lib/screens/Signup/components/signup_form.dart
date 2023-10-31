@@ -57,7 +57,7 @@ FirebaseFirestore.instance.collection('users').doc(auth.currentUser!.uid);
     });
   }
 }
-   String uid = "";
+   String id = "";
     String name = "";
     String email = "";
     String phoneNumber="";
@@ -283,7 +283,7 @@ bool _isPasswordVisible = false;
             password: passwordController.text,
           )
           .then((UserCredential userCredential) {
-            String uid = userCredential.user!.uid;
+            String id = userCredential.user!.uid;
             addUserDetails(
               nameController.text.trim(),
               emailController.text.trim(),
@@ -295,13 +295,13 @@ bool _isPasswordVisible = false;
             );
 
             // Display a success message to the user
-            Fluttertoast.showToast(
-              msg: "Compte créé avec succès",
-              toastLength: Toast.LENGTH_SHORT,
-              gravity: ToastGravity.TOP_RIGHT,
-              backgroundColor: Colors.green,
-              textColor: Colors.white,
-            );
+           SnackBar(
+      backgroundColor: Colors.green,
+      content: Text('Compte créé avec succés',),
+      behavior: SnackBarBehavior.floating,
+      margin: EdgeInsets.fromLTRB(10, 20, 10, 20),
+      elevation: 4,
+    );
 
             // Navigate to the login screen after successful registration
             Navigator.push(context,

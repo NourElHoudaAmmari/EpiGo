@@ -1,5 +1,6 @@
 
 
+import 'package:epigo_project/controllers/cart_controller.dart';
 import 'package:epigo_project/screens/Login/login_screen.dart';
 import 'package:epigo_project/screens/Welcome/welcome_screen.dart';
 import 'package:epigo_project/screens/Home_Screen/home_screen.dart';
@@ -7,6 +8,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 
 class AuthentificationRepository extends GetxController{
+ CartController cartController = Get.find();
   static AuthentificationRepository get instance => Get.find();
   final  _auth = FirebaseAuth.instance;
   late final Rx<User?> firebaseUser;

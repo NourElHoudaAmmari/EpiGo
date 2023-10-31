@@ -69,6 +69,13 @@ dependencies:
   gallery_saver: ^2.3.2
   intl_phone_field: ^3.2.0
   provider: ^6.0.5
+  unicons: ^2.1.1
+  carousel_slider: ^4.2.1
+  getwidget: ^4.0.0
+  gap: ^3.0.1
+  fluentui_system_icons: ^1.1.219
+  badges: ^3.1.1
+  fluentui_icons: ^1.0.0
   
 
 dev_dependencies:

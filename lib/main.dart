@@ -1,5 +1,10 @@
+import 'package:epigo_project/Utils/app_routes.dart';
 import 'package:epigo_project/config/constants.dart';
-import 'package:epigo_project/providers/product_provider.dart';
+import 'package:epigo_project/controllers/cart_controller.dart';
+import 'package:epigo_project/controllers/favorite_controller.dart';
+import 'package:epigo_project/controllers/product_controller.dart';
+import 'package:epigo_project/controllers/search_controller.dart';
+import 'package:epigo_project/controllers/user_controller.dart';
 import 'package:epigo_project/repository/authentification_repository.dart';
 import 'package:epigo_project/screens/Login/login_screen.dart';
 import 'package:epigo_project/screens/Welcome/welcome_screen.dart';
@@ -8,11 +13,7 @@ import 'package:get/get.dart';
 import'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:provider/provider.dart';
-
-import 'providers/review_cart_provider.dart';
-import 'providers/wishList_provider.dart';
-
-
+import 'package:epigo_project/controllers/profile_controller.dart';
 void main()async {
    WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
@@ -27,21 +28,17 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  // This widget is the root of your application.
+ SearchController searchController = Get.put(SearchController());
+    ProductController productController = Get.put(ProductController());
+ CartController cartController = Get.put(CartController());
+  FavoriteController favoriteController = Get.put(FavoriteController());
+UserController userController =Get.put(UserController());
+ProfileController profileController = Get.put(ProfileController());
+
  @override
-  Widget build(BuildContext context)=>MultiProvider(
-    providers:[
-        ChangeNotifierProvider<ProductProvider>(
-        create: (context) => ProductProvider(),
-      ),
-       ChangeNotifierProvider<ReviewCartProvider>(
-          create: (context) => ReviewCartProvider(),
-        ),
-         ChangeNotifierProvider<WishListProvider>(
-          create: (context) => WishListProvider(),
-        ),
-    ],
-    child: GetMaterialApp(
+  Widget build(BuildContext context){
+        final userController = Get.put(UserController());
+     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'EpiGo',
       theme: ThemeData(
@@ -72,10 +69,11 @@ class _MyAppState extends State<MyApp> {
      home: const WelcomeScreen(),
         initialBinding: BindingsBuilder(() {
         Get.put(AuthentificationRepository());
-      }),
    
+      }),
+        getPages: appRoutes(),
      
-    ),    
-);
+    );   
 
+}
 }

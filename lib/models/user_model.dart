@@ -1,25 +1,24 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-class UserModel{
-final String? id;
-final String name;
-final String email;
-final String phone;
-final String? address;
-final String? password;
-final String profilePick;
-final bool isBlocked;
+class MyUser{
+late final String? id;
+late final String? name;
+late final  String? email;
+late final String? phone;
+late final String? address;
+late final String? password;
+late final String? profilePick;
+late final bool isBlocked;
 
      
- static UserModel? currentUser;
-  UserModel({
+ static MyUser? currentUser;
+  MyUser({
     this.id,
-   
-   required  this.name,
-     required this.email, 
-     required this.phone, 
-     required this.address, 
-    required  this.password,
-      required this.profilePick,
+       this.name,
+      this.email, 
+         this.phone, 
+        this.address, 
+        this.password,
+       this.profilePick,
     this.isBlocked=false,
     
   
@@ -38,19 +37,43 @@ toJson(){
 
     };
 }
+ Map<String, dynamic> toMap() => {
+        'uid': id,
+        'name': name,
+        'email': email,
+         'phone': phone,
+          'address':address,
+           'password':password,
+        'profilePick':profilePick,   
+          'isBlocked':isBlocked,
+       
+      };
 
-factory UserModel.fromSnapshot(DocumentSnapshot<Map<String, dynamic>> document){
+factory MyUser.fromSnapshot(DocumentSnapshot<Map<String, dynamic>> document){
   final data = document.data()!;
-  return UserModel(
+  return MyUser(
      id:document.id,
+       name: data["name"],
     email:data["email"],
-    password: data["password"],
-    name: data["name"],
-    phone: data["phone"],
+     phone: data["phone"],
       address: data["address"],
-            profilePick: data["profilePick"],
-            isBlocked: data["isBlocked"],
+    password: data["password"],
+      profilePick: data["profilePick"],
+      isBlocked: data["isBlocked"],
+
      );
 }
-    
+ 
+  MyUser.fromDocumentSnapshot({required DocumentSnapshot snapshot}) {
+    id = snapshot['uid'];
+    name = snapshot['name'];
+    email = snapshot['email'];
+      phone = snapshot['phone'];
+        address = snapshot['address'];
+            password = snapshot['password'];
+   profilePick= snapshot['profilePick'];
+    isBlocked = snapshot['isBlocked'];
+
+  }
+
 }
