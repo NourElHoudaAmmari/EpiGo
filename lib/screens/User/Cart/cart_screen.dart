@@ -1,10 +1,13 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:epigo_project/config/constants.dart';
 import 'package:epigo_project/controllers/cart_controller.dart';
+import 'package:epigo_project/models/product_model.dart';
 import 'package:epigo_project/screens/User/Cart/cart_card.dart';
+import 'package:epigo_project/screens/User/Checkout/checkout.dart';
 import 'package:epigo_project/screens/User/Home_Screen/home_screen.dart';
 import 'package:epigo_project/styles/styles.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
@@ -15,7 +18,10 @@ class CartScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
   final CartController cartController = Get.put(CartController());
+    final User? user = FirebaseAuth.instance.currentUser;
+    final FirebaseFirestore firestore = FirebaseFirestore.instance;
     return Scaffold(
+      
         appBar: AppBar(
         title:  Text(
           "Mon Panier",
@@ -27,102 +33,22 @@ class CartScreen extends StatelessWidget {
           icon: Icon(CupertinoIcons.arrowtriangle_left,color: Colors.black,), onPressed: () {  Navigator.of(context).pop();},
         ),
       ),
-        body: Obx(
-      () => cartController.cartList.isNotEmpty
-          ? Column(
-              children: [
-                Expanded(
-                  child: Padding(
-                      padding: const EdgeInsets.all(20),
-                      child: GridView.count(
-                        shrinkWrap: true,
-                        crossAxisCount: 1,
-                        mainAxisSpacing: 4,
-                        crossAxisSpacing: 20,
-                        childAspectRatio: 4,
-                        children: List.generate(
-                          cartController.cartList.length,
-                          (index) {
-                            return CartCard(
-                              product: cartController.cartList[index],
-                            );
-                          },
-                        ),
-                      )),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: Container(
-                    padding: const EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                       color: Color.fromARGB(255, 241, 240, 240),
-                        borderRadius: BorderRadius.circular(15)),
-                    child: Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text('Total: ', style: Styles.textStyle),
-                     Text('${cartController.total.toString()} DT',
-                                style: Styles.headLineStyle4),
-                          ],
-                        ),
-                        Divider(color: Styles.primaryColor),
-                        const Gap(10),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text('Sous-Total: ', style: Styles.textStyle),
-                         Text('${cartController.subTotal.toString()} DT',
-                                style: Styles.headLineStyle4),
-                          ],
-                        ),
-                        const Gap(10),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text('Livraison: ', style: Styles.textStyle),
-                             Text('${cartController.shippingFee.toString()} DT',
-                                style: Styles.headLineStyle4),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                  child: SizedBox(
-                    width: double.infinity,
-                    height: 50,
-                    child: ElevatedButton(
-                      onPressed: () {
-                     
-                      },
-                      child: Text('Paiement'),
-                    style: ButtonStyle(
-    backgroundColor: MaterialStateProperty.all(primaryColor), // Couleur de fond
-    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-      RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8.0), // Rayon de la bordure
-        side: BorderSide(color:primaryColor), // Couleur et épaisseur de la bordure
-      ),
-    ),
-  ),
-                    ),
-                  ),
-                ),
-              ],
-            )
-          : Stack(
-  children: [
+     body: StreamBuilder<QuerySnapshot>(
+        stream: firestore.collection('users').doc(user!.uid).collection('cart').snapshots(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text("Erreur : ${snapshot.error}"));
+          } else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+            return Stack(
+             children: [
     Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Image.asset(
-            'assets/images/cartempty.png', // Assurez-vous que le chemin est correct
+            'assets/images/cartempty.png',
             width: 450,
             height: 300,
           ),
@@ -162,8 +88,99 @@ class CartScreen extends StatelessWidget {
       ),
     ),
   ],
-),
-        ),
-          );
-        }
+            );
+          } else {
+            // Affichez la liste des produits du panier de l'utilisateur actuel.
+            final cartItems = snapshot.data!.docs;
+            return Column(
+              children: [
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: GridView.count(
+                     shrinkWrap: true,
+                        crossAxisCount: 1,
+                        mainAxisSpacing: 4,
+                        crossAxisSpacing: 20,
+                        childAspectRatio: 4, // Adapté à votre mise en page
+                    children: cartItems.map((cartItem) {
+                          return CartCard(
+                            product: Product.fromMap(cartItem.data() as Map<String, dynamic>), // Convertissez les données en un objet Product
+                          );
+                        }).toList(),
+                    ),
+                  ),
+                ),
+           Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Container(
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                       color: Color.fromARGB(255, 241, 240, 240),
+                        borderRadius: BorderRadius.circular(15)),
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text('Total: ', style: Styles.textStyle),
+                     Text('${cartController.total.toString()} DT',
+                                style: Styles.headLineStyle4),
+                          ],
+                        ),
+                        Divider(color: Styles.primaryColor),
+                        const Gap(10),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text('Sous-Total: ', style: Styles.textStyle),
+                         Text('${cartController.subTotal.toString()} DT',
+                                style: Styles.headLineStyle4),
+                          ],
+                        ),
+                        const Gap(10),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text('Livraison: ', style: Styles.textStyle),
+                             Text('${cartController.calculateShippingFee()} DT',
+                                style: Styles.headLineStyle4),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                  child: SizedBox(
+                    width: double.infinity,
+                    height: 50,
+                    child: ElevatedButton(
+                      onPressed: () {
+                     Get.to(()=> Checkout_Page());
+                      },
+                      child: Text('Paiement',style: TextStyle(color: Colors.black),),
+                    style: ButtonStyle(
+    backgroundColor: MaterialStateProperty.all(primaryColor), // Couleur de fond
+    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+      RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8.0), // Rayon de la bordure
+        side: BorderSide(color:primaryColor), // Couleur et épaisseur de la bordure
+      ),
+    ),
+  ),
+                    ),
+                  ),
+                ),
+            
+              ],
+            );
+          }
+        },
+      ),
+    );
+  }
+  
 }

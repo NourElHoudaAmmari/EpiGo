@@ -10,23 +10,106 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 
-class CartCard extends StatelessWidget {
+class CartCard extends StatefulWidget {
   const CartCard({
     Key? key,
     required this.product,
   }) : super(key: key);
 
   final Product product;
+  
 
+  @override
+  State<CartCard> createState() => _CartCardState();
+}
+
+
+class _CartCardState extends State<CartCard> {
+      final CartController cartController = Get.find();
+   Future<void> confirmAndRemoveProduct(Product product) async {
+      if (product.quantity == 1) {
+        bool? confirm = await showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Text('Confirmation'),
+              content: Text('Voulez-vous retirer ce produit du panier ?'),
+              actions: <Widget>[
+                TextButton(
+                  child: Text('Non'),
+                  onPressed: () {
+                    Navigator.of(context).pop(false);
+                  },
+                ),
+                TextButton(
+                  child: Text('Oui',style: TextStyle(color: Styles.primaryColor,fontSize: 14),),
+                  onPressed: () {
+                    Navigator.of(context).pop(true);
+                  },
+                ),
+              ],
+            );
+          },
+        );
+
+        if (confirm != null && confirm) {
+          cartController.removeProduct(product);
+        }
+      } else {
+        cartController.removeProduct(product);
+      }
+    }
   @override
   Widget build(BuildContext context) {
     final CartController cartController = Get.find();
-    return Container(
+     return Dismissible(
+      key: ValueKey(widget.product.id),
+      background: Container(
+        color:Colors.red,
+        alignment: Alignment.centerRight,
+        padding: const EdgeInsets.only(right: 20),
+        child: const Icon(
+          Icons.delete,
+          color: Colors.white,
+          size: 40,
+        ),
+      ),
+      direction: DismissDirection.endToStart,
+      confirmDismiss: (direction) {
+        return showDialog(
+          context: context,
+          builder: (ctx) => AlertDialog(
+            title: const Text('Confirmation'),
+            content: const Text(
+              'Voulez-vous retirer ce produit du panier ?',
+            ),
+            actions: <Widget>[
+              TextButton(
+                  child: Text('Non'),
+                  onPressed: () {
+                    Navigator.of(context).pop(false);
+                  },
+                ),
+                TextButton(
+                  child: Text('Oui',style: TextStyle(color: Styles.primaryColor,fontSize: 14),),
+                  onPressed: () {
+                    Navigator.of(context).pop(true);
+                  },
+                ),
+            ],
+          ),
+        );
+      },
+      onDismissed: (direction) {
+        cartController.removeProduct(widget.product);
+      },
+      child:Container(
       padding: EdgeInsets.all(10),
       decoration: BoxDecoration(
-  color: Color.fromARGB(255, 241, 240, 240),
+  color: Styles.cardColor,
         borderRadius: BorderRadius.circular(10),
       ),
+      
       child: Center(
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -38,7 +121,7 @@ class CartCard extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Image.network(
-                      product.imageUrl,
+                      widget.product.imageUrl,
                       height: AppLayout.getHeight(50),
                       width: AppLayout.getWidth(50),
                     ),
@@ -47,15 +130,30 @@ class CartCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          product.title,
+                          widget.product.title,
                           style: Styles.headLineStyle2,
                         ),
                         const Gap(6),
-                        Text(
-                          product.discount.isGreaterThan(0)
-                              ? '${(product.price - (product.price * product.discount / 100)).toStringAsFixed(2)}\Dt'
-                              : '${product.price.toStringAsFixed(2)}\Dt',
-                          style: Styles.headLineStyle4,
+                        Row(
+                          children: [
+                            Text(
+                              widget.product.discount.isGreaterThan(0)
+                                  ? '${(widget.product.price).toStringAsFixed(3)}\Dt'
+                                  : '',
+                              style: TextStyle(
+                                decoration: TextDecoration.lineThrough,
+                                color: Styles.orangeColor,
+                              ),
+                            ),
+                            const Gap(4),
+                            Text(
+                              widget.product.discount.isGreaterThan(0)
+                                  ? '${(widget.product.price - (widget.product.price * widget.product.discount / 100)).toStringAsFixed(3)}\Dt'
+                                  : '${widget.product.price.toStringAsFixed(3)}\Dt',
+                              style: Styles.headLineStyle4,
+                            ),
+                            Text( '/${widget.product.unit}',style: Styles.headLineStyle5,),
+                          ],
                         ),
                       ],
                     ),
@@ -69,7 +167,7 @@ class CartCard extends StatelessWidget {
                 children: [
                   InkWell(
                     onTap: () {
-                      cartController.removeProduct(product);
+                      confirmAndRemoveProduct(widget.product);
                     },
                     child: Container(
                       height: 30,
@@ -92,13 +190,13 @@ class CartCard extends StatelessWidget {
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
-                      product.quantity.toString(),
+                      widget.product.quantity.toString(),
                       style: Styles.headLineStyle2,
                     ),
                   ),
                   InkWell(
                     onTap: () {
-               cartController.addProduct(product);
+                      cartController.addProduct(widget.product);
                     },
                     child: Container(
                       height: 30,
@@ -115,9 +213,10 @@ class CartCard extends StatelessWidget {
                   ),
                 ],
               ),
-            )
+            ),
           ],
         ),
+      ),
       ),
     );
   }

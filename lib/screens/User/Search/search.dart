@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:epigo_project/controllers/search_controller.dart';
+import 'package:epigo_project/controllers/cart_controller.dart';
 import 'package:epigo_project/models/product_model.dart';
 import 'package:epigo_project/screens/User/Cart/cart_screen.dart';
 import 'package:epigo_project/screens/User/Home_Screen/home_screen.dart';
@@ -11,6 +11,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:badges/badges.dart' as badges;
+
 
 
 class ProductSearchPage extends StatefulWidget {
@@ -38,6 +40,36 @@ class _ProductSearchPageState extends State<ProductSearchPage> {
       }
     }
   }
+
+
+  Stream<List<Product>> sortProductsByPriceDescending() {
+  return _firestore
+      .collection('products')
+      .orderBy('price', descending: true) // Tri par le champ 'price' en ordre décroissant
+      .snapshots()
+      .map((QuerySnapshot query) {
+        List<Product> retVal = [];
+        query.docs.forEach((element) {
+          retVal.add(Product.fromDocumentSnapshot(snapshot: element));
+        });
+
+        return retVal;
+      });
+}
+Stream<List<Product>> getDiscountedProducts() {
+  return _firestore
+      .collection('products')
+      .where('discount', isGreaterThan: 0)
+      .snapshots()
+      .map((QuerySnapshot query) {
+        List<Product> retVal = [];
+        query.docs.forEach((element) {
+          retVal.add(Product.fromDocumentSnapshot(snapshot: element));
+        });
+
+        return retVal;
+      });
+}
   Stream<List<Product>>? productsStream;
   
   @override
@@ -45,6 +77,9 @@ class _ProductSearchPageState extends State<ProductSearchPage> {
     super.initState();
     productsStream = getAllProducts();
     fetchBlockedStatus();
+getDiscountedProducts();
+     sortProductsByPriceAscending();
+     sortProductsByPriceDescending();
   }
  Stream<List<Product>> getAllProducts() {
     return _firestore
@@ -60,10 +95,23 @@ class _ProductSearchPageState extends State<ProductSearchPage> {
     });
   }
 
+Stream<List<Product>> sortProductsByPriceAscending() {
+  return _firestore
+      .collection('products')
+      .orderBy('price') // Tri par le champ 'price'
+      .snapshots()
+      .map((QuerySnapshot query) {
+        List<Product> retVal = [];
+        query.docs.forEach((element) {
+          retVal.add(Product.fromDocumentSnapshot(snapshot: element));
+        });
+
+        return retVal;
+      });
+}
 
   @override
   Widget build(BuildContext context) {
-     final SearchController searchController = Get.put(SearchController());
       return Scaffold(
          appBar: AppBar(
         title: Text(
@@ -104,7 +152,7 @@ class _ProductSearchPageState extends State<ProductSearchPage> {
                 IconButton(
                   icon: Icon(Icons.filter_list,color: Colors.deepOrange,),
                   onPressed: () {
-                    // Ajoutez votre logique de filtrage ici
+                       _showFilterModal(context);
                   },
                 ),
               ],
@@ -135,12 +183,12 @@ class _ProductSearchPageState extends State<ProductSearchPage> {
                 }
 
              return GridView.count(
-  shrinkWrap: true,
+                    shrinkWrap: true,
                       crossAxisCount: 2,
                       mainAxisSpacing: 20,
                       crossAxisSpacing: 20,
                       childAspectRatio: 1 / 1.3,
-   children: List.generate(
+                children: List.generate(
                      products.length,
                         (index) {
                           return ProductCard(
@@ -235,7 +283,7 @@ ScaffoldMessenger.of(context).showSnackBar(snackBar);
   );
     }
       },
-    icon: const Icon(Icons.shopping_cart_outlined),
+    icon: BadgeIcon(),
     ),
     const SizedBox(width: 24),
      IconButton(onPressed: (){
@@ -268,5 +316,77 @@ ScaffoldMessenger.of(context).showSnackBar(snackBar);
 
           return retVal;
         });
+  }
+  void _showFilterModal(BuildContext context) {
+  showModalBottomSheet(
+    context: context,
+    builder: (BuildContext context) {
+      return Container(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Text(
+                "Filtrer par",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                ),
+              ),
+            ),
+            ListTile(
+              title: Text("Prix Par Ordre Croissant"),
+            onTap: () {
+                // Tri par prix croissant
+                setState(() {
+                  productsStream = sortProductsByPriceAscending();
+                });
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              title: Text("Prix Par Ordre Décroissant"),
+             onTap: () {
+                // Tri par prix décroissant
+                setState(() {
+                  productsStream = sortProductsByPriceDescending();
+                });
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              title: Text("Par prix remisé"),
+                 onTap: () {
+                setState(() {
+                  productsStream =  getDiscountedProducts();
+                });
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        ),
+      );
+    },
+  );
+}
+}
+class BadgeIcon extends StatelessWidget {
+  BadgeIcon({
+    Key? key,
+  }) : super(key: key);
+
+  final CartController cartController = Get.find();
+
+  @override
+  Widget build(BuildContext context) {
+    return Obx(() => cartController.products.length > 0
+        ? badges.Badge(
+            // Utilisez le widget Badge avec le paramètre badgeContent pour afficher le nombre de produits dans le panier.
+            badgeContent: Text(cartController.products.length.toString(),
+                style: TextStyle(color: Styles.bgColor)), // Ajoutez le style souhaité
+            child: Icon(Icons.shopping_bag_outlined),
+          )
+        : Icon(Icons.shopping_bag_outlined));
   }
 }

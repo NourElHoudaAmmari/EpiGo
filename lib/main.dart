@@ -4,17 +4,16 @@ import 'package:epigo_project/controllers/cart_controller.dart';
 import 'package:epigo_project/controllers/favorite_controller.dart';
 import 'package:epigo_project/controllers/product_controller.dart';
 import 'package:epigo_project/controllers/search_controller.dart';
+import 'package:epigo_project/controllers/theme_controller.dart';
 import 'package:epigo_project/controllers/user_controller.dart';
 import 'package:epigo_project/repository/authentification_repository.dart';
-import 'package:epigo_project/screens/User/Login/login_screen.dart';
 import 'package:epigo_project/screens/User/Welcome/welcome_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import'package:firebase_core/firebase_core.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:provider/provider.dart';
 import 'package:epigo_project/controllers/profile_controller.dart';
 void main()async {
+    Get.put(ThemeController());
    WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   runApp(MyApp());
@@ -34,14 +33,15 @@ class _MyAppState extends State<MyApp> {
   FavoriteController favoriteController = Get.put(FavoriteController());
 UserController userController =Get.put(UserController());
 ProfileController profileController = Get.put(ProfileController());
+  final ThemeController themeController = Get.find();
 
  @override
   Widget build(BuildContext context){
-        final userController = Get.put(UserController());
      return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'EpiGo',
-      theme: ThemeData(
+      theme:// themeController.theme,
+      ThemeData(
           primaryColor: primaryColor,
           scaffoldBackgroundColor: Colors.white,
           elevatedButtonTheme: ElevatedButtonThemeData(
@@ -64,8 +64,7 @@ ProfileController profileController = Get.put(ProfileController());
               borderRadius: BorderRadius.all(Radius.circular(30)),
               borderSide: BorderSide.none,
             ),
-          )),
-          
+          )),          
      home: const WelcomeScreen(),
         initialBinding: BindingsBuilder(() {
         Get.put(AuthentificationRepository());

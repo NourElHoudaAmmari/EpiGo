@@ -1,17 +1,21 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:epigo_project/config/constants.dart';
+import 'package:epigo_project/controllers/cart_controller.dart';
 import 'package:epigo_project/controllers/favorite_controller.dart';
 import 'package:epigo_project/controllers/product_controller.dart';
+import 'package:epigo_project/models/product_model.dart';
 import 'package:epigo_project/screens/User/Cart/cart_screen.dart';
 import 'package:epigo_project/screens/User/Home_Screen/home_screen.dart';
 import 'package:epigo_project/screens/User/Profile/profile_screen.dart';
 import 'package:epigo_project/screens/User/Search/search.dart';
 import 'package:epigo_project/screens/User/Product/product_card.dart';
+import 'package:epigo_project/services/firestore_db.dart';
 import 'package:epigo_project/styles/styles.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:badges/badges.dart' as badges;
 
 class FavoritesScreen extends StatefulWidget {
   FavoritesScreen({super.key});
@@ -50,6 +54,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
  }
   @override
   Widget build(BuildContext context) {
+   
     return Scaffold(
         appBar: AppBar(
         title:  Text(
@@ -62,72 +67,74 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
           icon: Icon(CupertinoIcons.arrowtriangle_left,color: Colors.black,), onPressed: () {  Navigator.of(context).pop();},
         ),
       ),
-        body: Obx(
-        (() => favoriteController.favorites.isEmpty
-            ? Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Image.asset(
-                'assets/images/favoriteempty.png', // Chemin de votre image
-                width: 200,
-                height: 200,
-              ),
-              SizedBox(height: 10),
-              Text(
-                "Aucun élément favori",
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              ),
-              ElevatedButton(
-                onPressed: () {
-         Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) =>HomeScreen()),
-            );
-                },
-                child: Text("Retour à l'accueil",style: TextStyle(color: Colors.black),),
-                   style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(primaryColor), // Couleur de fond
-    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-      RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8.0), // Rayon de la bordure
-        side: BorderSide(color:primaryColor), // Couleur et épaisseur de la bordure
-      ),
-    ),
-            minimumSize: MaterialStateProperty.all(Size(100, 40)), // Ajustez la taille selon vos besoins
-          ),
-              ),
-            ],
-          ),
-        )
-            : ListView(
+        body:StreamBuilder<List<Product>>(
+        stream: FirestoreDB().getFavorites(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return CircularProgressIndicator();
+          } else if (snapshot.hasError) {
+            return Text('Erreur : ${snapshot.error}');
+          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.all(20),
-                    child: GridView.count(
-                      shrinkWrap: true,
-                      crossAxisCount: 2,
-                      mainAxisSpacing: 20,
-                      crossAxisSpacing: 20,
-                      childAspectRatio: 1 / 1.3,
-                      children: List.generate(
-                        favoriteController.favorites.length,
-                        (index) {
-                          return ProductCard(
-                            product: favoriteController.favorites[index],
-                          );
-                        },
+                  Image.asset(
+                    'assets/images/favoriteempty.png',
+                    width: 200,
+                    height: 200,
+                  ),
+                  SizedBox(height: 10),
+                  Text(
+                    "Aucun élément favori",
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => HomeScreen()),
+                      );
+                    },
+                    child: Text("Retour à l'accueil", style: TextStyle(color: Colors.black)),
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all(primaryColor),
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                          side: BorderSide(color: primaryColor),
+                        ),
                       ),
+                      minimumSize: MaterialStateProperty.all(Size(100, 40)),
                     ),
                   ),
                 ],
-              )),
-      ),
-    
-  
-
-             
-           
+              ),
+            );
+          } else {
+            List<Product> favorites = snapshot.data!;
+            return ListView(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: GridView.count(
+                    shrinkWrap: true,
+                    crossAxisCount: 2,
+                    mainAxisSpacing: 20,
+                    crossAxisSpacing: 20,
+                    childAspectRatio: 1 / 1.3,
+                    children: favorites.map((product) {
+                      return ProductCard(
+                        product: product,
+                      );
+                    }).toList(),
+                  ),
+                ),
+              ],
+            );
+          }
+        },
+      ),  
 bottomNavigationBar: BottomAppBar(
         shape: const CircularNotchedRectangle(),
         color: Colors.grey[100],
@@ -209,7 +216,7 @@ ScaffoldMessenger.of(context).showSnackBar(snackBar);
   );
     }
       },
-    icon: const Icon(Icons.shopping_cart_outlined),
+    icon: BadgeIcon(),
     ),
     const SizedBox(width: 24),
      IconButton(onPressed: (){
@@ -227,4 +234,23 @@ ScaffoldMessenger.of(context).showSnackBar(snackBar);
       ),
       );
 }
+}
+class BadgeIcon extends StatelessWidget {
+  BadgeIcon({
+    Key? key,
+  }) : super(key: key);
+
+  final CartController cartController = Get.find();
+
+  @override
+  Widget build(BuildContext context) {
+    return Obx(() => cartController.products.length > 0
+        ? badges.Badge(
+            // Utilisez le widget Badge avec le paramètre badgeContent pour afficher le nombre de produits dans le panier.
+            badgeContent: Text(cartController.products.length.toString(),
+                style: TextStyle(color: Styles.bgColor)), // Ajoutez le style souhaité
+            child: Icon(Icons.shopping_bag_outlined),
+          )
+        : Icon(Icons.shopping_bag_outlined));
+  }
 }

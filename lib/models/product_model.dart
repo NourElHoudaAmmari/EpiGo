@@ -11,7 +11,8 @@ class Product {
   late String imageUrl;
   late bool availableInStock;
   late int? quantity;
- 
+  late int? stockQuantity;
+
 
 
   Product({
@@ -25,6 +26,8 @@ class Product {
     required this.imageUrl,
     this.quantity,
     required this.availableInStock,    
+    this.stockQuantity,
+
   });
 
   Product.fromDocumentSnapshot({required DocumentSnapshot snapshot}) {
@@ -37,8 +40,9 @@ class Product {
     description = snapshot['description'];
     imageUrl = snapshot['imageUrl'];
     quantity = snapshot['quantity'];
-   
     availableInStock = snapshot['availableInStock'];
+    stockQuantity = snapshot['stockQuantity'];
+  
  
   }
   Product.fromMap(Map<String, dynamic> map) {
@@ -52,6 +56,8 @@ class Product {
     imageUrl = map['imageUrl'];
     quantity = map['quantity'];
     availableInStock = map['availableInStock'];
+    stockQuantity = map['stockQuantity'];
+
   
   }
   Map<String, dynamic> toMap() => {
@@ -65,6 +71,26 @@ class Product {
         'imageUrl': imageUrl,
         'quantity': quantity,
         'availableInStock': availableInStock,
+        'stockQuantity': stockQuantity,
+      
      
       };
+ factory Product.fromQueryDocumentSnapshot(QueryDocumentSnapshot snapshot) {
+    Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
+    return Product(
+      // Initialize fields based on the data from the snapshot
+      id: snapshot.id,
+      title: data['title'],
+      price: data['price'],
+      discount: data['discount'],
+      category: data['category'],
+      unit: data['unit'],
+      description: data['description'],
+      imageUrl: data['imageUrl'],
+      quantity: data['quantity'],
+      availableInStock: data['availableInStock'],
+      stockQuantity: data['stockQuantity'],
+    );
+  }
+  static fromSnapshot(DocumentSnapshot<Object?> doc) {}
 }

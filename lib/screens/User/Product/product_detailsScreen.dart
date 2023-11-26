@@ -56,50 +56,54 @@ void initState() {
 
   @override
   Widget build(BuildContext context) {
-   return Scaffold(
-      body: ListView(
-        children: [
-          const Padding(
-            padding: EdgeInsets.all(20),
-            child: BuildAppBar(title: 'Détails du produit'),
-          ),
-          Center(
-            child: SizedBox(
-              height: AppLayout.getHeight(300),
-              width: AppLayout.getHeight(300),
-              child: Hero(
-                transitionOnUserGestures: true,
-                tag: widget.product,
-                child: AspectRatio(
-                  aspectRatio: 1.1,
-                  child: ClipPath(
-                    clipper: MyClipper(),
-                    child: Container(
-                      height: AppLayout.getHeight(350),
-                      // color: Styles.whiteColor,
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                          colors: [
-                            Styles.whiteColor,
-                            Styles.whiteColor,
-                            // Styles.orangeColor,
-                          ],
-                        ),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(50),
-                        child: Image.network(widget.product.imageUrl),
-                        
-                      ),
-                    ),
-                  ),
+      var media = MediaQuery.sizeOf(context);
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Stack(
+              alignment: Alignment.topCenter,
+              children: [
+                Container(
+                  width: double.maxFinite,
+                  height: media.width * 0.9,
+                  decoration: BoxDecoration(
+                     // color: const Color(0xffF2F3F2),
+                      borderRadius: BorderRadius.circular(15)),
+                  alignment: Alignment.center,
+                  child: Image.network(widget.product.imageUrl),
                 ),
-              ),
+                SafeArea(
+                  child: AppBar(
+                      backgroundColor: Colors.transparent,
+                      elevation: 0,
+                      leading: IconButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          icon: Image.asset(
+                            "assets/images/back.png",
+                            width: 20,
+                            height: 20,
+                          )),
+                      actions: [
+                        IconButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            icon: Image.asset(
+                              "assets/images/share.png",
+                              width: 20,
+                              height: 20,
+                            )),
+                      ]),
+                ),
+              ],
             ),
-          ),
-          Padding(
+SizedBox(height: 16,),
+                Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -159,9 +163,9 @@ SizedBox(height: 8,),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    Text(' ${widget.product.price.toString()}\Dt',
-                        style: Styles.headLineStyle2),
-                    Text('  ${widget.product.unit}', style: Styles.headLineStyle3)
+                    Text(' ${widget.product.price.toStringAsFixed(3)} \Dt / ${widget.product.unit}',
+                        style: Styles.headLineStyle3),
+                   // Text('  ${widget.product.unit}', style: Styles.headLineStyle3)
                   ],
                 ),
               ],
@@ -177,20 +181,20 @@ SizedBox(height: 8,),
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text('Description du produit', style: Styles.headLineStyle2),
-                const Gap(10),
+                const Gap(18),
                 Text(widget.product.description, style: TextStyle(color: Colors.black),),
               ],
             ),
           ),
           Padding(
-            padding: const EdgeInsets.all(30),
+            padding: const EdgeInsets.all(40),
             child: SizedBox(
               height: AppLayout.getHeight(55),
               child: ElevatedButton(
                 onPressed: () {
                    cartController.addProduct(widget.product);
                 },
-                child: Text('Ajouter au panier'),
+                child: Text('Ajouter au panier',style: TextStyle(color: Colors.black),),
                  style: ButtonStyle(
     backgroundColor: MaterialStateProperty.all(primaryColor), // Couleur de fond
     shape: MaterialStateProperty.all<RoundedRectangleBorder>(
@@ -204,26 +208,10 @@ SizedBox(height: 8,),
             ),
           ),
           const Gap(20),
-        ],
+         
+          ],
+        ),
       ),
     );
   }
-}
-
-class MyClipper extends CustomClipper<Path> {
-  @override
-  Path getClip(Size size) {
-    final path = Path();
-
-    path.lineTo(0, size.height - 60);
-    path.quadraticBezierTo(
-        size.width / 2, size.height, size.width, size.height - 60);
-    path.lineTo(size.width, 0);
-
-    path.close();
-    return path;
-  }
-
-  @override
-  bool shouldReclip(covariant CustomClipper<Path> oldClipper) => false;
 }

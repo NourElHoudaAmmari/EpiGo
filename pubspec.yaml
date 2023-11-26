@@ -76,6 +76,11 @@ dependencies:
   fluentui_system_icons: ^1.1.219
   badges: ^3.1.1
   fluentui_icons: ^1.0.0
+  rxdart: ^0.27.7
+  flutter_iconly: ^1.0.2
+  get_storage: ^2.1.1
+  share: ^2.0.4
+  share_plus: ^7.2.1
   
 
 dev_dependencies:

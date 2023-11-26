@@ -3,8 +3,10 @@ import 'dart:io';
 import 'package:epigo_project/config/constants.dart';
 import 'package:epigo_project/repository/authentification_repository.dart';
 import 'package:epigo_project/repository/user_repository.dart';
+import 'package:epigo_project/screens/User/Adresses/List_adresses.dart';
 import 'package:epigo_project/screens/User/Home_Screen/home_screen.dart';
 import 'package:epigo_project/screens/User/Login/login_screen.dart';
+import 'package:epigo_project/screens/User/Profile/components/codePromo.dart';
 import 'package:epigo_project/screens/User/Profile/components/profile_item.dart';
 import 'package:epigo_project/screens/User/Profile/helpSupport.dart';
 import 'package:epigo_project/screens/User/Profile/settings.dart';
@@ -125,13 +127,18 @@ void getUserData() async {
                       Text('Ordres', style: Styles.textStyle),
                     ],
                   ),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Icon(UniconsLine.location_point, color: Styles.primaryColor),
-                      Text('Addresses', style: Styles.textStyle),
-                    ],
+                  InkWell(
+                    onTap: () => Get.to(()=>AdressList()),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Icon(UniconsLine.location_point, color: Styles.primaryColor),
+                        Text('Addresses', style: Styles.textStyle),
+                     
+                      ],
+                      
+                    ),
                   ),
                   Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -150,6 +157,12 @@ void getUserData() async {
             onTap: () => Navigator.of(context)
                 .push(MaterialPageRoute(builder: ((context) => UserDetailScreen()))),
             title: 'Détails',
+          ),
+            ProfileItem(
+            icon: UniconsLine.ticket,
+            onTap: () => Navigator.of(context)
+                .push(MaterialPageRoute(builder: ((context) => CodePromo()))),
+            title: 'Codes Promo',
           ),
           ProfileItem(
             icon: UniconsLine.setting,

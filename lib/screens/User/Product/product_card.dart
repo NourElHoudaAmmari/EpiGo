@@ -11,6 +11,7 @@ import 'package:epigo_project/styles/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
+import 'package:epigo_project/services/firestore_db.dart';
 
 class ProductCard  extends StatefulWidget {
  ProductCard({
@@ -42,7 +43,7 @@ UserController userController =Get.put(UserController());
       child: Container(
         padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
-          color: Color.fromARGB(255, 241, 240, 240),
+          color: Styles.cardColor,
           borderRadius: BorderRadius.circular(15),
         ),
         child: Column(
@@ -112,7 +113,17 @@ UserController userController =Get.put(UserController());
               style: Styles.textStyle,
               maxLines: 2,
             ),
-            Text(widget.product.unit, style: Styles.headLineStyle4),
+            Text(widget.product.unit, style: Styles.headLineStyle5),
+            SizedBox(height: 4,),
+                Text(
+                  widget.product.availableInStock ? 'En stock' : 'Rupture de stock',
+                  style: TextStyle(
+                    color: widget.product.availableInStock
+                        ? Colors.green // Color for in stock
+                        : Colors.red, // Color for out of stock
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
             const Spacer(),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -120,8 +131,8 @@ UserController userController =Get.put(UserController());
                 Row(
                   children: [
                     Text(
-                      '${widget.product.price.toString()}\Dt',
-                      style: Styles.headLineStyle4.copyWith(
+                      '${widget.product.price.toStringAsFixed(3)}\Dt',
+                      style: Styles.headLineStyle6.copyWith(
                         decoration: widget.product.discount.isGreaterThan(0)
                             ? TextDecoration.lineThrough
                             : TextDecoration.none,
@@ -131,16 +142,42 @@ UserController userController =Get.put(UserController());
                     const Gap(4),
                     Text(
                       widget.product.discount.isGreaterThan(0)
-                          ? '${(widget.product.price - (widget.product.price * widget.product.discount / 100)).toStringAsFixed(2)}\Dt'
+                          ? '${(widget.product.price - (widget.product.price * widget.product.discount / 100)).toStringAsFixed(3)}\Dt'
                           : '',
-                      style: Styles.headLineStyle4,
+                      style: Styles.headLineStyle6,
                     ),
                   ],
                 ),
                 InkWell(
-                  onTap: () {
-       cartController.addProduct(widget.product);
-                  },
+              onTap: () async {
+        // Check if the product is already in the cart
+        bool isInCart = await cartController.isProductInCart(widget.product);
+
+        if (isInCart) {
+          // Product is already in the cart, show snackbar
+          Get.snackbar(
+            'Article déjà dans le panier',
+            '${widget.product.title} existe déjà dans votre panier',
+            snackPosition: SnackPosition.TOP,
+            backgroundColor: Colors.red,
+            colorText: Styles.whiteColor,
+            duration: const Duration(seconds: 3),
+          );
+        } else {
+          // Product is not in the cart, add it
+          cartController.addProduct(widget.product);
+
+          // Optionally, you can show a different snackbar for successful addition
+          Get.snackbar(
+            'Ajouté au panier',
+            '${widget.product.title} ajouté au panier',
+            snackPosition: SnackPosition.TOP,
+            backgroundColor: Colors.green,
+            colorText: Styles.whiteColor,
+            duration: const Duration(seconds: 2),
+          );
+        }
+      },
                   child: Container(
                     height: AppLayout.getHeight(30),
                     width: AppLayout.getWidth(30),
