@@ -14,6 +14,7 @@ class Styles {
   static Color kPrimaryLightColor = Color(0xFFF5F5F5);
   static Color textColor = Colors.black87;
   static Color cardColor = Color.fromARGB(255, 241, 240, 240);
+  static Color kTextColor = Color(0xFF757575);
   static double defaultPadding = 16.0;
   // dark mode
   static Color primaryColorDark = Color(0xFF956B0E); 

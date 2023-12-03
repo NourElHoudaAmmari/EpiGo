@@ -21,6 +21,34 @@ class CartScreen extends StatelessWidget {
     final User? user = FirebaseAuth.instance.currentUser;
     final FirebaseFirestore firestore = FirebaseFirestore.instance;
     return Scaffold(
+    /* bottomNavigationBar: Row(
+        children: [
+          bonntonNavigatorBar(
+              backgroundColor: textColor,
+              color: Colors.white70,
+              title: "Ajouter article",
+              onTap: () {
+                  Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => HomeScreen(),
+                  ),
+                );
+              }),
+          bonntonNavigatorBar(
+              backgroundColor: primaryColor,
+              color: textColor,
+              title: "Commander",
+             
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) =>  Checkout_Page(),
+                  ),
+                );
+              }),
+        ],
+      ),*/
+    
       
         appBar: AppBar(
         title:  Text(
@@ -161,7 +189,7 @@ class CartScreen extends StatelessWidget {
                       onPressed: () {
                      Get.to(()=> Checkout_Page());
                       },
-                      child: Text('Paiement',style: TextStyle(color: Colors.black),),
+                      child: Text('Commander',style: TextStyle(color: Colors.black,fontSize: 18),),
                     style: ButtonStyle(
     backgroundColor: MaterialStateProperty.all(primaryColor), // Couleur de fond
     shape: MaterialStateProperty.all<RoundedRectangleBorder>(
@@ -182,5 +210,33 @@ class CartScreen extends StatelessWidget {
       ),
     );
   }
-  
+  Widget bonntonNavigatorBar({
+   
+    required Color backgroundColor,
+    required Color color,
+    required String title,
+ 
+   required VoidCallback onTap,
+  }) {
+    return Expanded(
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          padding: EdgeInsets.all(20),
+          color: backgroundColor,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+
+              Text(
+                title,
+                style: TextStyle(color: color),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+ 
 }

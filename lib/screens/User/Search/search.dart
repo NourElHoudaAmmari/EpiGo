@@ -1,11 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:epigo_project/controllers/cart_controller.dart';
+import 'package:epigo_project/controllers/search_controller.dart';
 import 'package:epigo_project/models/product_model.dart';
 import 'package:epigo_project/screens/User/Cart/cart_screen.dart';
 import 'package:epigo_project/screens/User/Home_Screen/home_screen.dart';
 import 'package:epigo_project/screens/User/Profile/profile_screen.dart';
 import 'package:epigo_project/screens/User/Wishlist/favorite_screen.dart';
 import 'package:epigo_project/screens/User/Product/product_card.dart';
+import 'package:epigo_project/services/firestore_db.dart';
 import 'package:epigo_project/styles/styles.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -23,6 +25,7 @@ class ProductSearchPage extends StatefulWidget {
 class _ProductSearchPageState extends State<ProductSearchPage> {
    final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   TextEditingController textController = TextEditingController();
+  SearchController searchController = SearchController();
   bool _isBlocked = false;
   Future<void> fetchBlockedStatus() async {
     User? user = FirebaseAuth.instance.currentUser;
@@ -42,45 +45,11 @@ class _ProductSearchPageState extends State<ProductSearchPage> {
   }
 
 
-  Stream<List<Product>> sortProductsByPriceDescending() {
-  return _firestore
-      .collection('products')
-      .orderBy('price', descending: true) // Tri par le champ 'price' en ordre décroissant
-      .snapshots()
-      .map((QuerySnapshot query) {
-        List<Product> retVal = [];
-        query.docs.forEach((element) {
-          retVal.add(Product.fromDocumentSnapshot(snapshot: element));
-        });
 
-        return retVal;
-      });
-}
-Stream<List<Product>> getDiscountedProducts() {
-  return _firestore
-      .collection('products')
-      .where('discount', isGreaterThan: 0)
-      .snapshots()
-      .map((QuerySnapshot query) {
-        List<Product> retVal = [];
-        query.docs.forEach((element) {
-          retVal.add(Product.fromDocumentSnapshot(snapshot: element));
-        });
 
-        return retVal;
-      });
-}
   Stream<List<Product>>? productsStream;
   
-  @override
-  void initState() {
-    super.initState();
-    productsStream = getAllProducts();
-    fetchBlockedStatus();
-getDiscountedProducts();
-     sortProductsByPriceAscending();
-     sortProductsByPriceDescending();
-  }
+
  Stream<List<Product>> getAllProducts() {
     return _firestore
         .collection('products')
@@ -95,21 +64,15 @@ getDiscountedProducts();
     });
   }
 
-Stream<List<Product>> sortProductsByPriceAscending() {
-  return _firestore
-      .collection('products')
-      .orderBy('price') // Tri par le champ 'price'
-      .snapshots()
-      .map((QuerySnapshot query) {
-        List<Product> retVal = [];
-        query.docs.forEach((element) {
-          retVal.add(Product.fromDocumentSnapshot(snapshot: element));
-        });
-
-        return retVal;
-      });
-}
-
+  @override
+  void initState() {
+    super.initState();
+    productsStream = getAllProducts();
+    fetchBlockedStatus();
+ //searchController.getDiscountedProducts();
+     // searchController.sortProductsByPriceAscending();
+      //searchController.sortProductsByPriceDescending();
+  }
   @override
   Widget build(BuildContext context) {
       return Scaffold(
@@ -144,7 +107,7 @@ Stream<List<Product>> sortProductsByPriceAscending() {
     ),
     onChanged: (value) {
       setState(() {
-        productsStream = searchProducts(value);
+        productsStream = FirestoreDB().searchProduct(value);
       });
     },
   ),
@@ -302,21 +265,7 @@ ScaffoldMessenger.of(context).showSnackBar(snackBar);
     );
   }
 
-  Stream<List<Product>> searchProducts(String query) {
-    return _firestore
-        .collection('products')
-        .where('title', isGreaterThanOrEqualTo: query)
-        .where('title', isLessThanOrEqualTo: query + '\uf8ff')
-        .snapshots()
-        .map((QuerySnapshot query) {
-          List<Product> retVal = [];
-          query.docs.forEach((element) {
-            retVal.add(Product.fromDocumentSnapshot(snapshot: element));
-          });
 
-          return retVal;
-        });
-  }
   void _showFilterModal(BuildContext context) {
   showModalBottomSheet(
     context: context,
@@ -340,7 +289,7 @@ ScaffoldMessenger.of(context).showSnackBar(snackBar);
             onTap: () {
                 // Tri par prix croissant
                 setState(() {
-                  productsStream = sortProductsByPriceAscending();
+                  productsStream = FirestoreDB().sortProductsByPriceAscending();
                 });
                 Navigator.pop(context);
               },
@@ -350,7 +299,7 @@ ScaffoldMessenger.of(context).showSnackBar(snackBar);
              onTap: () {
                 // Tri par prix décroissant
                 setState(() {
-                  productsStream = sortProductsByPriceDescending();
+                  productsStream =FirestoreDB().sortProductsByPriceDescending();
                 });
                 Navigator.pop(context);
               },
@@ -359,7 +308,7 @@ ScaffoldMessenger.of(context).showSnackBar(snackBar);
               title: Text("Par prix remisé"),
                  onTap: () {
                 setState(() {
-                  productsStream =  getDiscountedProducts();
+                  productsStream = FirestoreDB().getDiscountedProducts();
                 });
                 Navigator.pop(context);
               },

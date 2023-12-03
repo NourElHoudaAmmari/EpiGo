@@ -9,7 +9,7 @@ import 'package:epigo_project/styles/styles.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
+import 'package:epigo_project/models/order_model.dart';
 import '../models/product_model.dart';
 
 
@@ -19,6 +19,7 @@ class FirestoreDB {
 final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final UserController _userController = Get.find();
   final ProfileController profileController =Get.put(ProfileController());
+   //CollectionReference get cart => _firestore.collection('cart');
 
      
 
@@ -49,22 +50,68 @@ final FirebaseFirestore _firestore = FirebaseFirestore.instance;
       return retVal;
     });
   }
-
-  Stream<List<Product>> searchProduct(String searchText) {
+  //search and filter
+    Stream<List<Product>> searchProduct(String query) {
     return _firestore
         .collection('products')
-        .where('title', isGreaterThanOrEqualTo: searchText.toUpperCase())
+        .where('title', isGreaterThanOrEqualTo: query)
+        .where('title', isLessThanOrEqualTo: query + '\uf8ff')
         .snapshots()
         .map((QuerySnapshot query) {
-      List<Product> retVal = [];
-      query.docs.forEach((element) {
-        retVal.add(Product.fromDocumentSnapshot(snapshot: element));
-      });
+          List<Product> retVal = [];
+          query.docs.forEach((element) {
+            retVal.add(Product.fromDocumentSnapshot(snapshot: element));
+          });
 
-      return retVal;
-    });
+          return retVal;
+        });
   }
+  //filter products with discount
+  Stream<List<Product>> getDiscountedProducts() {
+  return _firestore
+      .collection('products')
+      .where('discount', isGreaterThan: 0)
+      .snapshots()
+      .map((QuerySnapshot query) {
+        List<Product> retVal = [];
+        query.docs.forEach((element) {
+          retVal.add(Product.fromDocumentSnapshot(snapshot: element));
+        });
 
+        return retVal;
+      });
+}
+//filter product with AscendingPrice
+Stream<List<Product>> sortProductsByPriceAscending() {
+  return _firestore
+      .collection('products')
+      .orderBy('price') // Tri par le champ 'price'
+      .snapshots()
+      .map((QuerySnapshot query) {
+        List<Product> retVal = [];
+        query.docs.forEach((element) {
+          retVal.add(Product.fromDocumentSnapshot(snapshot: element));
+        });
+
+        return retVal;
+      });
+}
+//filter product with DescendingPrice
+  Stream<List<Product>> sortProductsByPriceDescending() {
+  return _firestore
+      .collection('products')
+      .orderBy('price', descending: true) // Tri par le champ 'price' en ordre décroissant
+      .snapshots()
+      .map((QuerySnapshot query) {
+        List<Product> retVal = [];
+        query.docs.forEach((element) {
+          retVal.add(Product.fromDocumentSnapshot(snapshot: element));
+        });
+
+        return retVal;
+      });
+}
+//product
   Future<void> addProduct({required Product product}) async {
     final productDoc = _firestore.collection('products').doc();
     Product newProduct = Product(
@@ -212,16 +259,6 @@ Future<void> addToCart(Product product) async {
             .update({'quantity': data['quantity'] = data['quantity'] + 1})
             .then((value) => print("User Updated"))
             .catchError((error) => print("Failed to update user: $error"));
-
-       /* Get.snackbar(
-          'Article déjà dans le panier',
-          '${product.title} existe déjà dans votre panier',
-          snackPosition: SnackPosition.TOP,
-          backgroundColor: Colors.red,
-          colorText: Styles.whiteColor,
-          duration: const Duration(seconds: 3),
-        );*/
-
         return;
       } else {
         userDoc
@@ -229,14 +266,6 @@ Future<void> addToCart(Product product) async {
             .collection('cart')
             .doc(product.id)
             .set(product.toMap());
-       /* Get.snackbar(
-          'Ajouté au panier',
-          '${product.title} ajouté au panier',
-          snackPosition: SnackPosition.TOP,
-          backgroundColor: Colors.green,
-          colorText: Styles.whiteColor,
-          duration: const Duration(seconds: 2),
-        );*/
       }
     }
   } catch (e) {
@@ -346,6 +375,95 @@ Stream<List<Product>> getCart() {
     return Stream<List<Product>>.empty(); 
   }
 }
+Future<void> clearCart() async {
+  try {
+    final User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      final String uid = user.uid;
+      final CollectionReference cartCollection =
+          FirebaseFirestore.instance.collection('users').doc(uid).collection('cart');
+
+      // Get all documents in the user's cart collection
+      final QuerySnapshot cartSnapshot = await cartCollection.get();
+
+      // Iterate through each document and delete it
+      for (final QueryDocumentSnapshot cartItem in cartSnapshot.docs) {
+        await cartCollection.doc(cartItem.id).delete();
+      }
+    }
+  } catch (e) {
+    print(e);
+  }
+}
+//orders 
+Future<void> addOrder({required Orders order}) async {
+  try {
+    // Récupérer l'utilisateur actuellement connecté
+    User? currentUser = FirebaseAuth.instance.currentUser;
+
+    if (currentUser == null) {
+      // Gérer le cas où aucun utilisateur n'est connecté
+      print("Aucun utilisateur connecté");
+      return;
+    }
+
+    // Utiliser l'ID de l'utilisateur actuel pour créer l'ordre
+    var cartList = order.cart!.map((c) => c).toList();
+    final orderDoc = _firestore.collection('orders').doc();
+    Orders newOrder = Orders(
+      id: orderDoc.id,
+      cart: order.cart,
+      total: order.total,
+     user: order.user,// Utiliser l'ID de l'utilisateur connecté
+      date: order.date,
+      status: order.status,
+      paymentMethod: order.paymentMethod,
+      paymentStatus: order.paymentStatus,
+      deliveryStatus: order.deliveryStatus,
+      deliveryAddress: order.deliveryAddress,
+      deliverymethods: order.deliverymethods,
+    );
+
+    await orderDoc.set(newOrder.toMap());
+  } catch (e) {
+    print("Erreur lors de l'ajout de la commande: $e");
+    // Gérer les erreurs selon vos besoins
+  }
+}
+Stream<List<Orders>> getOrdersByUser() {
+  final User? user = FirebaseAuth.instance.currentUser;
+
+  if (user != null) {
+    final userUid = user.uid;
+    return _firestore
+        .collection('orders')
+        .where('user.uid', isEqualTo: userUid)
+        .snapshots()
+        .map((QuerySnapshot query) {
+          List<Orders> retVal = [];
+          query.docs.forEach((element) {
+            retVal.add(Orders.fromDocumentSnapshot(snapshot: element));
+          });
+          return retVal;
+        });
+  } else {
+    print("Utilisateur non connecté.");
+    return Stream.value([]);
+  }
+}
+Stream<List<Orders>> getOrdersByStatus(String status) {
+    return _firestore
+        .collection('orders')
+        .where('status', isEqualTo: status)
+        .snapshots()
+        .map((QuerySnapshot query) {
+      List<Orders> retVal = [];
+      query.docs.forEach((element) {
+        retVal.add(Orders.fromDocumentSnapshot(snapshot: element));
+      });
+      return retVal;
+    });
+  }
 
 //address
 Future<void> addAddress(Address adresse) async {
@@ -438,5 +556,7 @@ Future<void> deselectAllAddresses(String currentAddressId) async {
       return retVal;
     });
   }
+
+  
 }
 

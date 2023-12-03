@@ -134,6 +134,7 @@ void init() {
       child: Column(
         children: [
           TextFormField(
+             
            controller: emailController,
             keyboardType: TextInputType.emailAddress,
             textInputAction: TextInputAction.next,
@@ -164,6 +165,7 @@ void init() {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: defaultPadding),
             child: TextFormField(
+             
            controller: passwordController,
   textInputAction: TextInputAction.done,
   obscureText: !_isPasswordVisible, // Toggle password visibility

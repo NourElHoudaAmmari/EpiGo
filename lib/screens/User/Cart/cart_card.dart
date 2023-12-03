@@ -1,7 +1,3 @@
-
-
-
-
 import 'package:epigo_project/controllers/cart_controller.dart';
 import 'package:epigo_project/models/product_model.dart';
 import 'package:epigo_project/styles/app_layout.dart';

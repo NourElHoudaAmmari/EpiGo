@@ -7,15 +7,19 @@ import 'package:epigo_project/controllers/search_controller.dart';
 import 'package:epigo_project/controllers/theme_controller.dart';
 import 'package:epigo_project/controllers/user_controller.dart';
 import 'package:epigo_project/repository/authentification_repository.dart';
+import 'package:epigo_project/screens/User/Login/login_screen.dart';
 import 'package:epigo_project/screens/User/Welcome/welcome_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import'package:firebase_core/firebase_core.dart';
 import 'package:epigo_project/controllers/profile_controller.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 void main()async {
     Get.put(ThemeController());
    WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+    Stripe.publishableKey =
+      'pk_test_51OI6pZG23tUrhOWb4UngIMvy1Smuwq4Nblv0KC8o70lQskiuiRQLHNNho8OZWMGIJ9jy5QDxy4TY4AXHwxd7zs1T00Xlkxm8Hp';
   runApp(MyApp());
 }
 
@@ -65,7 +69,7 @@ ProfileController profileController = Get.put(ProfileController());
               borderSide: BorderSide.none,
             ),
           )),          
-     home: const WelcomeScreen(),
+     home: LoginScreen(),
         initialBinding: BindingsBuilder(() {
         Get.put(AuthentificationRepository());
    

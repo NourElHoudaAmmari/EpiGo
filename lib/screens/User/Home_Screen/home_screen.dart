@@ -222,21 +222,20 @@ ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 }
 class BadgeIcon extends StatelessWidget {
-  BadgeIcon({
-    Key? key,
-  }) : super(key: key);
+  BadgeIcon({Key? key}) : super(key: key);
 
   final CartController cartController = Get.find();
 
   @override
   Widget build(BuildContext context) {
-    return Obx(() => cartController.products.length > 0
-        ? badges.Badge(
-            // Utilisez le widget Badge avec le paramètre badgeContent pour afficher le nombre de produits dans le panier.
-            badgeContent: Text(cartController.products.length.toString(),
-                style: TextStyle(color: Styles.bgColor)), // Ajoutez le style souhaité
-            child: Icon(Icons.shopping_bag_outlined),
-          )
-        : Icon(Icons.shopping_bag_outlined));
+    return Obx(
+      () => badges.Badge(
+        badgeContent: Text(
+          cartController.products.length.toString(),
+          style: TextStyle(color: Styles.bgColor),
+        ),
+        child: Icon(Icons.shopping_bag_outlined),
+      ),
+    );
   }
 }

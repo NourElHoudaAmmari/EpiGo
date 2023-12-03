@@ -6,9 +6,10 @@ import 'package:epigo_project/repository/user_repository.dart';
 import 'package:epigo_project/screens/User/Adresses/List_adresses.dart';
 import 'package:epigo_project/screens/User/Home_Screen/home_screen.dart';
 import 'package:epigo_project/screens/User/Login/login_screen.dart';
+import 'package:epigo_project/screens/User/Order/orderScreen.dart';
 import 'package:epigo_project/screens/User/Profile/components/codePromo.dart';
 import 'package:epigo_project/screens/User/Profile/components/profile_item.dart';
-import 'package:epigo_project/screens/User/Profile/helpSupport.dart';
+import 'package:epigo_project/screens/User/Profile/note_avis.dart';
 import 'package:epigo_project/screens/User/Profile/settings.dart';
 import 'package:epigo_project/screens/User/Profile/user_details.dart';
 import 'package:epigo_project/styles/app_layout.dart';
@@ -118,14 +119,17 @@ void getUserData() async {
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Icon(UniconsLine.clipboard_notes,
-                          color: Styles.primaryColor),
-                      Text('Ordres', style: Styles.textStyle),
-                    ],
+                  InkWell(
+                    onTap: ()=> Get.to(OrderScreen()),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Icon(UniconsLine.clipboard_notes,
+                            color: Styles.primaryColor),
+                        Text('Commandes', style: Styles.textStyle),
+                      ],
+                    ),
                   ),
                   InkWell(
                     onTap: () => Get.to(()=>AdressList()),
@@ -134,7 +138,7 @@ void getUserData() async {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Icon(UniconsLine.location_point, color: Styles.primaryColor),
-                        Text('Addresses', style: Styles.textStyle),
+                        Text('Adresses', style: Styles.textStyle),
                      
                       ],
                       
@@ -146,7 +150,7 @@ void getUserData() async {
                     children: [
                       Icon(UniconsLine.wallet,
                           color: Styles.primaryColor),
-                      Text('Paiement', style: Styles.textStyle),
+                      Text('Paiements', style: Styles.textStyle),
                     ],
                   ),
                 ],
@@ -173,8 +177,8 @@ void getUserData() async {
           ProfileItem(
             icon: UniconsLine.info_circle,
             onTap: () => Navigator.of(context)
-                .push(MaterialPageRoute(builder: ((context) => HelpSupport()))),
-            title: 'Aide et Assistance',
+                .push(MaterialPageRoute(builder: ((context) =>  Reviews()))),
+            title: 'Note et Avis',
           ),
           ProfileItem(
             icon: UniconsLine.sign_out_alt,

@@ -32,4 +32,15 @@ class SearchController extends GetxController {
   Future searchProduct(String searchText) async {
     products.bindStream(FirestoreDB().searchProduct(searchText));
   }
+ /* Future<Stream<List<Product>>> getDiscountedProducts() async {
+    return FirestoreDB.getDiscountedProducts();
+  }
+
+  Future<Stream<List<Product>>> sortProductsByPriceAscending() async {
+    return FirestoreDB.sortProductsByPriceAscending();
+  }
+
+  Future<Stream<List<Product>>> sortProductsByPriceDescending() async {
+    return FirestoreDB.sortProductsByPriceDescending();
+  }*/
 }

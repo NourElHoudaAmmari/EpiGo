@@ -17,19 +17,17 @@ class CartController extends GetxController {
   void onReady() {
     products.bindStream(FirestoreDB().getCart());
   }
+   Future<void> clearCart() async {
+    await FirestoreDB().clearCart();
+        update();
+  }
 
 Future addProduct(Product product) async {
     await FirestoreDB().addToCart(product);
+    
 
     if (product.quantity! > 1) return;
-  /*  Get.snackbar(
-      'Ajouté au panier',
-      '${product.title} ajouté au panier',
-      snackPosition: SnackPosition.TOP,
-      backgroundColor: Colors.green,
-      colorText: Styles.whiteColor,
-      duration: const Duration(seconds: 1),
-    );*/
+ 
 }
   Future removeProduct(Product product) async {
     await FirestoreDB().deleteFromCart(product);
@@ -72,12 +70,21 @@ Future addProduct(Product product) async {
 
     return shipping;
   }
-  get subTotal => cartList
+ get subTotal {
+    if (cartList.isEmpty) {
+      return '0.000';
+    }
+
+    return cartList
       .map((e) => (e.price - (e.price * e.discount / 100)) * e.quantity!)
       .reduce((a, b) => a + b)
       .toStringAsFixed(3);
-
+ }
   get total {
+    if (cartList.isEmpty) {
+      return '0.000';
+    }
+
     var total = cartList
             .map((e) => (e.price - (e.price * e.discount / 100)) * e.quantity!)
             .reduce((a, b) => a + b) +
