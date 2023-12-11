@@ -10,7 +10,7 @@ import 'package:get/get.dart';
 
 class SearchProduct extends StatelessWidget {
    SearchProduct({super.key});
-  SearchController searchController = Get.find();
+SearchControllerapp  searchController = Get.find();
     ProductController productController = Get.put(ProductController());
  CartController cartController = Get.find();
   FavoriteController favoriteController = Get.put(FavoriteController());

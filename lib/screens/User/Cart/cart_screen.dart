@@ -6,6 +6,7 @@ import 'package:epigo_project/screens/User/Cart/cart_card.dart';
 import 'package:epigo_project/screens/User/Checkout/checkout.dart';
 import 'package:epigo_project/screens/User/Home_Screen/home_screen.dart';
 import 'package:epigo_project/styles/styles.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +18,7 @@ class CartScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final FirebaseAnalytics _analytics = FirebaseAnalytics.instance;
   final CartController cartController = Get.put(CartController());
     final User? user = FirebaseAuth.instance.currentUser;
     final FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -187,6 +189,9 @@ class CartScreen extends StatelessWidget {
                     height: 50,
                     child: ElevatedButton(
                       onPressed: () {
+                        _analytics.logEvent(name: 'button_addOrder_clicked',
+    parameters: {'screen':'CartScreen'},
+    );
                      Get.to(()=> Checkout_Page());
                       },
                       child: Text('Commander',style: TextStyle(color: Colors.black,fontSize: 18),),

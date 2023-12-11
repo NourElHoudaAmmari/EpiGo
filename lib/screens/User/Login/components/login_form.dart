@@ -251,6 +251,7 @@ void init() {
   ),
               child: Text(
                 "Se Connecter".toUpperCase(),
+                style: TextStyle(color: textColor),
               ),
             ),
           ),

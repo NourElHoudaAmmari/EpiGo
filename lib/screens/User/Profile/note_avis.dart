@@ -23,7 +23,7 @@ class _ReviewsState extends State<Reviews> {
       backgroundColor: kWhiteColor,
       appBar:  AppBar(
         title:  Text(
-          "Paiement",
+          "Notes et Avis",
           style: TextStyle(color: Colors.black, fontSize: 20,fontWeight: FontWeight.bold),
         ),
         elevation: 0.0,
@@ -72,7 +72,7 @@ class _ReviewsState extends State<Reviews> {
                     ),
                     SizedBox(height: 16.0),
                     Text(
-                      "${reviewList.length} Reviews",
+                      "${reviewList.length} Avis",
                       style: TextStyle(
                         fontSize: 20.0,
                         color: kLightColor,
@@ -124,7 +124,7 @@ class _ReviewsState extends State<Reviews> {
                   date: reviewList[index].date,
                   comment: reviewList[index].comment,
                   rating: reviewList[index].rating,
-                  onPressed: () => print("More Action $index"),
+                  onPressed: () => print("Plus d'action $index"),
                   onTap: () => setState(() {
                     isMore = !isMore;
                   }),

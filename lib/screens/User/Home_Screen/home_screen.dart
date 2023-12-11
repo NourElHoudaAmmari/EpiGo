@@ -36,7 +36,7 @@ class _HomeScreenState extends State<HomeScreen> {
    ProductController productController = Get.put(ProductController());
  CategoryController categoryController = Get.put(CategoryController());
 UserController userController = Get.put(UserController());
- SearchController searchController = Get.put(SearchController());
+SearchControllerapp  searchController = Get.put(SearchControllerapp());
 CartController carrtController = Get.put(CartController());
   @override
   void initState(){
@@ -62,7 +62,7 @@ Future<void> fetchBlockedStatus() async {
   @override
   Widget build(BuildContext context) {
   
- SearchController searchController = Get.put(SearchController());
+ SearchControllerapp searchController = Get.put(SearchControllerapp());
      return DefaultTabController(
           //backgroundColor: Color.fromARGB(255, 219, 219, 219),
       length: 4,
@@ -87,8 +87,11 @@ Future<void> fetchBlockedStatus() async {
         bottom: TabBar(
                 
             isScrollable: true,
-            indicatorColor: Styles.marronColor,
-            indicatorSize: TabBarIndicatorSize.label,
+              indicatorColor: Styles.textColor,
+                  indicatorSize: TabBarIndicatorSize.label,
+                  labelColor: Styles.textColor,
+
+           
             tabs: const [
               Tab(text: 'Tous'),
               Tab(text: 'Fruits'),
@@ -120,7 +123,7 @@ Future<void> fetchBlockedStatus() async {
      
 bottomNavigationBar: BottomAppBar(
         shape: const CircularNotchedRectangle(),
-        color: Colors.grey[100],
+        color: Colors.white,
         child: IconTheme(
           data: IconThemeData(color: Colors.black),
          child: Padding(padding: const EdgeInsets.all(12.0),
@@ -152,7 +155,8 @@ ScaffoldMessenger.of(context).showSnackBar(snackBar);
       return;
     }else{
           Navigator.push(context,
-    MaterialPageRoute(builder: (context) => FavoritesScreen()),
+    MaterialPageRoute(
+      builder: (context) => FavoritesScreen()),
   );
     }
     },
@@ -195,7 +199,8 @@ ScaffoldMessenger.of(context).showSnackBar(snackBar);
       return;
     }else{
                  Navigator.push(context,
-    MaterialPageRoute(builder: (context) => CartScreen()),
+    MaterialPageRoute(
+      builder: (context) => CartScreen()),
   );
     }
       },

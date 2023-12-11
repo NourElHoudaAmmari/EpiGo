@@ -7,6 +7,7 @@ import 'package:epigo_project/screens/User/Home_Screen/home_screen.dart';
 
 import 'package:epigo_project/screens/User/Login/components/login_form.dart';
 import 'package:epigo_project/screens/User/Login/login_screen.dart';
+import 'package:epigo_project/screens/User/Profile/note_avis.dart';
 import 'package:epigo_project/screens/User/Profile/profile_screen.dart';
 import 'package:epigo_project/screens/User/Wishlist/favorite_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -176,7 +177,9 @@ ListTile(
       fontSize: 18,
     ),
   ),
-  onTap: (){},
+  onTap: (){
+    
+  },
 ),
 ListTile(
   leading: Icon(Icons.star_outline),
@@ -186,7 +189,12 @@ ListTile(
       fontSize: 18,
     ),
   ),
-  onTap: (){ },
+  onTap: (){ 
+     Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => Reviews()),
+            );
+  },
 ),
 ListTile(
   leading: Icon(Icons.favorite_outline),

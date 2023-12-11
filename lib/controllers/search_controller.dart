@@ -2,7 +2,7 @@ import 'package:epigo_project/models/product_model.dart';
 import 'package:epigo_project/services/firestore_db.dart';
 import 'package:get/get.dart';
 
-class SearchController extends GetxController {
+class SearchControllerapp extends GetxController {
    RxString _searchText = ''.obs;
   var products = <Product>[].obs;
   List<Product> get productList => products;

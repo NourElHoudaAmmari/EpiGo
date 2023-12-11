@@ -4,14 +4,17 @@ import 'package:epigo_project/controllers/favorite_controller.dart';
 import 'package:epigo_project/controllers/product_controller.dart';
 import 'package:epigo_project/controllers/user_controller.dart';
 import 'package:epigo_project/models/product_model.dart';
+import 'package:epigo_project/screens/User/Profile/note_avis.dart';
 import 'package:epigo_project/styles/app_layout.dart';
 import 'package:epigo_project/styles/styles.dart';
 import 'package:epigo_project/widgets/build_appbar.dart';
+import 'package:epigo_project/widgets/reviewUi.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
+ bool isMore = false;
 
 class  ProductDetails extends StatefulWidget {
  ProductDetails({Key? key, required this.product}) : super(key: key) {
@@ -185,7 +188,66 @@ SizedBox(height: 8,),
                 Text(widget.product.description, style: TextStyle(color: Colors.black),),
               ],
             ),
+            
           ),
+             SizedBox(height: kLessPadding),
+            kSmallDivider,
+         Container(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+             /* child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Commentaires', style: Styles.headLineStyle2),
+                  GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        isMore = !isMore;
+                      });
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.only(right: kDefaultPadding),
+                      child: Text("Voir tout", style: TextStyle(color: kPrimaryColor)),
+                    ),
+                  ),
+                ],
+              ),*/
+            ),
+
+            // Wrap your comment section in ExpansionTile
+            ExpansionTile(
+              initiallyExpanded: false, // Set it to true if you want comments to be initially expanded
+              title: Text("Commentaires", style: Styles.headLineStyle2),
+              children: [
+                // Your existing comment section
+                ListView.separated(
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  padding: EdgeInsets.only(bottom: 8.0, top: 8.0),
+                  itemCount: isMore ? reviewList.length : 3,
+                  itemBuilder: (context, index) {
+                    return ReviewUI(
+                          image: reviewList[index].image,
+                  name: reviewList[index].name,
+                  date: reviewList[index].date,
+                  comment: reviewList[index].comment,
+                  rating: reviewList[index].rating,
+                     onPressed: () => print("Plus d'action $index"),
+                      onTap: () => setState(() {
+                        isMore = !isMore;
+                      }),
+                      isLess: isMore,
+                    );
+                  },
+                  separatorBuilder: (context, index) {
+                    return Divider(
+                      thickness: 2.0,
+                      color: kAccentColor,
+                    );
+                  },
+                ),
+              ],
+            ),
+
           Padding(
             padding: const EdgeInsets.all(40),
             child: SizedBox(

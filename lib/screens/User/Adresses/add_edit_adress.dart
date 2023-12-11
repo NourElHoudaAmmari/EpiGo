@@ -3,8 +3,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:epigo_project/config/constants.dart';
 import 'package:epigo_project/controllers/adressController.dart';
 import 'package:epigo_project/models/address_model.dart';
-import 'package:epigo_project/screens/User/Adresses/List_adresses.dart';
 import 'package:epigo_project/styles/styles.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -21,6 +21,7 @@ class Add_EditAdress extends StatefulWidget {
 }
 
 class _AddAdressState extends State<Add_EditAdress> {
+    final FirebaseAnalytics _analytics = FirebaseAnalytics.instance;
   final AdressController adressController = Get.put(AdressController());
   final FirebaseAuth auth = FirebaseAuth.instance;
   final _formKey = GlobalKey<FormState>();
@@ -342,6 +343,9 @@ SizedBox(
   width: double.infinity,
   child: ElevatedButton(
   onPressed: () async {
+    _analytics.logEvent(name: 'button_adding_shipping_adresse_clicked',
+    parameters: {'screen':'CartScreen'},
+    );
     if (_formKey.currentState!.validate()) {
       setState(() {
         _isLoading = true;
@@ -400,7 +404,7 @@ SizedBox(
       }
 
       _formKey.currentState!.reset();
-      Get.to(() => AdressList());
+     Navigator.of(context).pop();
     } else {
     }
   },

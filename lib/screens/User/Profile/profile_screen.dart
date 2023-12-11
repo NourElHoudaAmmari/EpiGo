@@ -7,7 +7,9 @@ import 'package:epigo_project/screens/User/Adresses/List_adresses.dart';
 import 'package:epigo_project/screens/User/Home_Screen/home_screen.dart';
 import 'package:epigo_project/screens/User/Login/login_screen.dart';
 import 'package:epigo_project/screens/User/Order/orderScreen.dart';
+import 'package:epigo_project/screens/User/Payments_Cards/payment_history.dart';
 import 'package:epigo_project/screens/User/Profile/components/codePromo.dart';
+import 'package:epigo_project/screens/User/Profile/components/payment_card.dart';
 import 'package:epigo_project/screens/User/Profile/components/profile_item.dart';
 import 'package:epigo_project/screens/User/Profile/note_avis.dart';
 import 'package:epigo_project/screens/User/Profile/settings.dart';
@@ -144,14 +146,17 @@ void getUserData() async {
                       
                     ),
                   ),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Icon(UniconsLine.wallet,
-                          color: Styles.primaryColor),
-                      Text('Paiements', style: Styles.textStyle),
-                    ],
+                  InkWell(
+                    onTap: () => Get.to(()=>PaymentHistoryScreen()),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Icon(UniconsLine.wallet,
+                            color: Styles.primaryColor),
+                        Text('Paiements', style: Styles.textStyle),
+                      ],
+                    ),
                   ),
                 ],
               )),

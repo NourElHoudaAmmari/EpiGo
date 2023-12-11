@@ -321,7 +321,7 @@ bool _isPasswordVisible = false;
           });
     }
   },
-  child: Text("S'inscrire".toUpperCase()),
+  child: Text("S'inscrire".toUpperCase(),style: TextStyle(color: textColor),),
   style: ButtonStyle(
     backgroundColor: MaterialStateProperty.all(primaryColor),
     shape: MaterialStateProperty.all<RoundedRectangleBorder>(

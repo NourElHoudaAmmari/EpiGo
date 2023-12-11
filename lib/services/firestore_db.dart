@@ -1,12 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:epigo_project/controllers/profile_controller.dart';
 import 'package:epigo_project/controllers/user_controller.dart';
+import 'package:epigo_project/models/CodePromo_model.dart';
 import 'package:epigo_project/models/address_model.dart';
 import 'package:epigo_project/models/delivery_methods.dart';
 import 'package:epigo_project/repository/authentification_repository.dart';
 import 'package:epigo_project/repository/user_repository.dart';
 import 'package:epigo_project/styles/styles.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:firebase_performance/firebase_performance.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:epigo_project/models/order_model.dart';
@@ -15,6 +18,7 @@ import '../models/product_model.dart';
 
 
 class FirestoreDB {
+      RxList userCards = [].obs;
   final FirebaseAuth _auth = FirebaseAuth.instance;
 final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final UserController _userController = Get.find();
@@ -213,6 +217,8 @@ Stream<List<Product>> getFavorites() {
 }
 //cart
 Future<void> addToCart(Product product) async {
+   final Trace trace = FirebasePerformance.instance.newTrace('addProduct_toCartTrace');
+  trace.start();
   try {
     final User? user = FirebaseAuth.instance.currentUser;
     if (user != null) {
@@ -268,7 +274,10 @@ Future<void> addToCart(Product product) async {
             .set(product.toMap());
       }
     }
+    await Future.delayed(Duration(seconds: 2));
+    trace.stop();
   } catch (e) {
+    trace.stop();
     print(e);
   }
 }
@@ -425,9 +434,32 @@ Future<void> addOrder({required Orders order}) async {
     );
 
     await orderDoc.set(newOrder.toMap());
-  } catch (e) {
+  } catch (e,stack) {
     print("Erreur lors de l'ajout de la commande: $e");
+     FirebaseCrashlytics.instance.recordError(e, stack);
     // Gérer les erreurs selon vos besoins
+  }
+}
+Stream<List<Orders>> getCardPaymentsByUser() {
+  final User? user = FirebaseAuth.instance.currentUser;
+
+  if (user != null) {
+    final userUid = user.uid;
+    return _firestore
+        .collection('orders')
+        .where('user.uid', isEqualTo: userUid)
+        .where('paymentMethod', isEqualTo: 'Payer par carte')
+        .snapshots()
+        .map((QuerySnapshot query) {
+          List<Orders> retVal = [];
+          query.docs.forEach((element) {
+            retVal.add(Orders.fromDocumentSnapshot(snapshot: element));
+          });
+          return retVal;
+        });
+  } else {
+    print("Utilisateur non connecté.");
+    return Stream.value([]);
   }
 }
 Stream<List<Orders>> getOrdersByUser() {
@@ -467,6 +499,8 @@ Stream<List<Orders>> getOrdersByStatus(String status) {
 
 //address
 Future<void> addAddress(Address adresse) async {
+   final Trace trace = FirebasePerformance.instance.newTrace('addAddressTrace');
+  trace.start();
   try {
     final User? user = FirebaseAuth.instance.currentUser;
     if (user != null) {
@@ -478,8 +512,13 @@ Future<void> addAddress(Address adresse) async {
     } else {
       print("Utilisateur non connecté.");
     }
-  } catch (error) {
-    print("Erreur lors de l'ajout de l'adresse : $error");
+    await Future.delayed(Duration(seconds: 2));
+    trace.stop(); 
+     } catch (e, stack) {
+ 
+      trace.stop();
+    print("Erreur lors de l'ajout de l'adresse : $e");
+     FirebaseCrashlytics.instance.recordError(e, stack);
   }
 }
 Future<void> UpdateAddress(String adresseId, Address nouvelleAdresse) async {
@@ -556,7 +595,40 @@ Future<void> deselectAllAddresses(String currentAddressId) async {
       return retVal;
     });
   }
+//cards
+ getUserCards() {
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection('cards')
+        .snapshots()
+        .listen((event) {
+      userCards.value = event.docs;
+    });
+  }
 
-  
+  storeUserCard(String number, String expiry, String cvv, String name) async {
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection('cards')
+        .add({'name': name, 'number': number, 'cvv': cvv, 'expiry': expiry});
+
+    return true;
+  }
+  // couponcode 
+    Stream<List<CouponModel>> couponsStream() {
+    return _firestore
+        .collection('coupons')
+        .snapshots()
+        .map((QuerySnapshot query) {
+      List<CouponModel> retVal = [];
+      query.docs.forEach((element) {
+        retVal.add(CouponModel.fromDocumentSnapshot(element));
+      });
+
+      return retVal;
+    });
+  }
 }
 

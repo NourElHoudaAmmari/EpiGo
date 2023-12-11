@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 class MyUser{
 late final String? id;
@@ -8,6 +10,7 @@ late final String? address;
 late final String? password;
 late final String? profilePick;
 late final bool isBlocked;
+  String? stripeCustomerId;
 
      
  static MyUser? currentUser;
@@ -20,6 +23,7 @@ late final bool isBlocked;
         this.password,
        this.profilePick,
     this.isBlocked=false,
+    this.stripeCustomerId,
     
   
     
@@ -34,6 +38,7 @@ toJson(){
     "password":password,
       "profilePick":profilePick,
        "isBlocked":isBlocked,
+       "stripeCustomerId":stripeCustomerId,
 
     };
 }
@@ -46,6 +51,8 @@ toJson(){
            'password':password,
         'profilePick':profilePick,   
           'isBlocked':isBlocked,
+          'stripeCustomerId':stripeCustomerId,
+          
        
       };
 
@@ -60,6 +67,7 @@ factory MyUser.fromSnapshot(DocumentSnapshot<Map<String, dynamic>> document){
     password: data["password"],
       profilePick: data["profilePick"],
       isBlocked: data["isBlocked"],
+      stripeCustomerId: data['stripeCustomerId'],
 
      );
 }
@@ -73,7 +81,22 @@ factory MyUser.fromSnapshot(DocumentSnapshot<Map<String, dynamic>> document){
             password = snapshot['password'];
    profilePick= snapshot['profilePick'];
     isBlocked = snapshot['isBlocked'];
+    stripeCustomerId =snapshot['stripeCustomerId'];
 
   }
 
+MyUser.fromJson(Map<String, dynamic> json)
+      : id = json['id'],
+        email = json['email'],
+        name = json['name'],
+        phone = json['phone'],
+        address = json['address'],
+        password = json['password'],
+        profilePick = json['profilePick'],
+        isBlocked = json['isBlocked'] ,
+         stripeCustomerId = json['stripeCustomerId'];
+
+
+        
+      
 }

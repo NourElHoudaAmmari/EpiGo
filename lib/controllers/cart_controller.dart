@@ -15,7 +15,9 @@ class CartController extends GetxController {
 
   @override
   void onReady() {
+    
     products.bindStream(FirestoreDB().getCart());
+    
   }
    Future<void> clearCart() async {
     await FirestoreDB().clearCart();
@@ -44,47 +46,43 @@ Future addProduct(Product product) async {
       );
     }
   }
-  double calculateShippingFee() {
-    double shipping = 0.0;
+ double calculateShippingFee() {
+  double shipping = 0.0;
 
-    if (cartList.isEmpty) {
+  if (cartList.isEmpty) {
+    shipping = 0.0;
+  } else {
+    // Ensure that cartList is not empty before using fold
+    int totalQuantity = cartList.fold(0, (sum, product) => sum + product.quantity!);
+
+    double totalAmount = double.parse(subTotal);
+
+    if (totalAmount >= 100.00) {
       shipping = 0.0;
     } else {
-      // Calculer la quantité totale des produits dans le panier
-      int totalQuantity = cartList.fold(0, (sum, product) => sum + product.quantity!);
-
-      // Vérifier si le total de la commande est égal à 100.000 dt
-      double totalAmount = double.parse(subTotal);
-
-   if (totalAmount >= 100.00) {
-       shipping = 0.0;
-      } else {
-        // Appliquer les règles de calcul des frais de livraison en fonction de la quantité totale
-        if (totalQuantity >= 1 && totalQuantity <= 4) {
-          shipping = 3.500;
-        } else if (totalQuantity >= 5) {
-          shipping = 7.500;
-        }
+      if (totalQuantity >= 1 && totalQuantity <= 4) {
+        shipping = 3.500;
+      } else if (totalQuantity >= 5) {
+        shipping = 7.500;
       }
     }
-
-    return shipping;
   }
+
+  return shipping;
+}
  get subTotal {
     if (cartList.isEmpty) {
       return '0.000';
     }
-
     return cartList
       .map((e) => (e.price - (e.price * e.discount / 100)) * e.quantity!)
       .reduce((a, b) => a + b)
       .toStringAsFixed(3);
  }
   get total {
-    if (cartList.isEmpty) {
+      if (cartList.isEmpty) {
       return '0.000';
-    }
-
+      }
     var total = cartList
             .map((e) => (e.price - (e.price * e.discount / 100)) * e.quantity!)
             .reduce((a, b) => a + b) +
@@ -99,4 +97,12 @@ Future<Stream<List<Product>>> getCart() async {
 Future<bool> isProductInCart(Product product) async {
   return await FirestoreDB().isProductInCart(product.id);
 }
+  void updateTotal(double newTotal) {
+    // You might want to perform additional logic here, if needed
+    // For example, updating some UI elements or triggering other actions
+    total.value = newTotal;
+
+    // Notify all listeners that the value has changed
+    update();
+  }
 }

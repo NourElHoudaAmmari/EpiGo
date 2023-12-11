@@ -1,3 +1,4 @@
+import 'package:epigo_project/models/payment_model.dart';
 import 'package:epigo_project/models/review_model.dart';
 import 'package:flutter/material.dart';
 
@@ -63,106 +64,132 @@ const kSmallDivider = Divider(
 final reviewList = [
   ReviewModal(
     image: "assets/images/mensFashion.jpg",
-    name: "John Travolta",
+    name: "Ahmed Ben Hssine",
     rating: 3.5,
-    date: "01 Jan 2021",
+    date: "01 Nov 2023",
     comment:
         "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
   ),
   ReviewModal(
     image: "assets/images/girlsFashion.jpg",
-    name: "Scarlett Johansson",
+    name: "Asma Ben Ahmed",
     rating: 2.5,
-    date: "21 Feb 2021",
+    date: "21 Oct 2023",
     comment:
         "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
   ),
   ReviewModal(
     image: "assets/images/user1.jpg",
-    name: "Jennifer Lawrence",
+    name: "Maissa Jbeli",
     rating: 4.5,
-    date: "17 Mar 2021",
+    date: "17 Nov 2023",
     comment:
         "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
   ),
   ReviewModal(
     image: "assets/images/user11.jpg",
-    name: "Michael Jordan",
+    name: "Aya Ben Salih",
     rating: 1.5,
-    date: "12 Apr 2021",
+    date: "12 Oct 2023",
     comment:
         "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
   ),
   ReviewModal(
     image: "assets/images/user2.jpg",
-    name: "Nicole Kidman",
+    name: "Mostfa chaabane",
     rating: 2.0,
-    date: "28 May 2021",
+    date: "28 Nov 2023",
     comment:
         "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
   ),
   ReviewModal(
     image: "assets/images/user10.jpg",
-    name: "James Franco",
+    name: "Salma Mahjoub",
     rating: 4.0,
-    date: "14 Nov 2020",
+    date: "14 Nov 2023",
     comment:
         "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
   ),
   ReviewModal(
     image: "assets/images/user3.jpg",
-    name: "Margot Robbie",
+    name: "Haythem Abidi",
     rating: 1.0,
-    date: "14 Nov 2020",
+    date: "14 Nov 2023",
     comment:
         "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
   ),
   ReviewModal(
     image: "assets/images/user9.jpg",
-    name: "Nicolas Cage",
+    name: "Mohaned Ben Hssine",
     rating: 3.0,
-    date: "14 Nov 2020",
+    date: "19 Nov 2023",
     comment:
         "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
   ),
   ReviewModal(
     image: "assets/images/user4.jpg",
-    name: "Emma Stone",
+    name: "Emna Gatri",
     rating: 5.0,
-    date: "14 Nov 2020",
+    date: "28 Nov 2023",
     comment:
         "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
   ),
   ReviewModal(
     image: "assets/images/user8.jpg",
-    name: "Johnny Depp",
+    name: "Mohamed Ahmed",
     rating: 3.5,
-    date: "14 Nov 2020",
+    date: "16 Nov 2023",
     comment:
         "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
   ),
   ReviewModal(
     image: "assets/images/user5.jpg",
-    name: "Natalie Portman",
+    name: "Nadia Fourati",
     rating: 3.5,
-    date: "14 Nov 2020",
+    date: "11 Nov 2023",
     comment:
         "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
   ),
   ReviewModal(
     image: "assets/images/user7.jpg",
-    name: "Anne Hathaway",
+    name: "Nairouz Abdi",
     rating: 3.5,
-    date: "14 Nov 2020",
+    date: "14 Nov 2023",
     comment:
         "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
   ),
   ReviewModal(
     image: "assets/images/user6.jpg",
-    name: "Charlize Theron",
+    name: "Hedi Jerbi",
     rating: 3.5,
-    date: "14 Nov 2020",
+    date: "14 Nov 2023",
     comment:
         "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
   ),
+];
+final paymentDetailList = [
+  PaymentModal(
+      date: "Oct 01",
+      amount: 1000.0,
+      textColor: Colors.red),
+  PaymentModal(
+      date: "Nov 15",
+      amount: 650.0,
+      textColor: Colors.green),
+  PaymentModal(
+      date: "Dec 03",
+      amount: 180.0,
+      textColor: Colors.green),
+  PaymentModal(
+      date: "Nov 14",
+      amount: 540.0,
+      textColor: Colors.red),
+  PaymentModal(
+      date: "Oct 08",
+      amount: 210.0,
+      textColor: Colors.red),
+  PaymentModal(
+      date: "Dec 01",
+      amount: 375.0,
+      textColor: Colors.green),
 ];

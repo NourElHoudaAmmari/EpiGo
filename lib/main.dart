@@ -9,18 +9,26 @@ import 'package:epigo_project/controllers/user_controller.dart';
 import 'package:epigo_project/repository/authentification_repository.dart';
 import 'package:epigo_project/screens/User/Login/login_screen.dart';
 import 'package:epigo_project/screens/User/Welcome/welcome_screen.dart';
+import 'package:epigo_project/stripe_payment/stripe_keys.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:firebase_performance/firebase_performance.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import'package:firebase_core/firebase_core.dart';
 import 'package:epigo_project/controllers/profile_controller.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
+
 void main()async {
     Get.put(ThemeController());
    WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-    Stripe.publishableKey =
-      'pk_test_51OI6pZG23tUrhOWb4UngIMvy1Smuwq4Nblv0KC8o70lQskiuiRQLHNNho8OZWMGIJ9jy5QDxy4TY4AXHwxd7zs1T00Xlkxm8Hp';
+   await FirebasePerformance.instance;
+ //GetIt.I.registerSingleton<FirebaseAnalytics>(FirebaseAnalytics());
+    Stripe.publishableKey = ApiKeys.publishableKey;
+      FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
   runApp(MyApp());
+ //  FirebaseCrashlytics.instance.crash();
 }
 
 class MyApp extends StatefulWidget {
@@ -38,6 +46,10 @@ class _MyAppState extends State<MyApp> {
 UserController userController =Get.put(UserController());
 ProfileController profileController = Get.put(ProfileController());
   final ThemeController themeController = Get.find();
+final FirebaseAnalytics _analytics = FirebaseAnalytics.instance;
+ final FirebaseAnalyticsObserver _observer =
+      FirebaseAnalyticsObserver(analytics: FirebaseAnalytics.instance);
+
 
  @override
   Widget build(BuildContext context){
@@ -50,8 +62,8 @@ ProfileController profileController = Get.put(ProfileController());
           scaffoldBackgroundColor: Colors.white,
           elevatedButtonTheme: ElevatedButtonThemeData(
             style: ElevatedButton.styleFrom(
-              elevation: 0,
-              primary: primaryColor,
+              elevation: 0, 
+              backgroundColor: primaryColor,
               shape: const StadiumBorder(),
               maximumSize: const Size(double.infinity, 56),
               minimumSize: const Size(double.infinity, 56),
@@ -68,8 +80,9 @@ ProfileController profileController = Get.put(ProfileController());
               borderRadius: BorderRadius.all(Radius.circular(30)),
               borderSide: BorderSide.none,
             ),
-          )),          
-     home: LoginScreen(),
+          )),     
+          navigatorObservers: [_observer],     
+     home: WelcomeScreen(),
         initialBinding: BindingsBuilder(() {
         Get.put(AuthentificationRepository());
    

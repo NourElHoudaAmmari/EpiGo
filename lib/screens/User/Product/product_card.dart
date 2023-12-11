@@ -8,6 +8,7 @@ import 'package:epigo_project/repository/user_repository.dart';
 import 'package:epigo_project/screens/User/Product/product_detailsScreen.dart';
 import 'package:epigo_project/styles/app_layout.dart';
 import 'package:epigo_project/styles/styles.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
@@ -26,6 +27,7 @@ class ProductCard  extends StatefulWidget {
 }
 
 class _ProductCardState extends State<ProductCard> {
+  final FirebaseAnalytics _analytics = FirebaseAnalytics.instance;
   
   final ProductController productController = Get.put(ProductController());
 
@@ -38,7 +40,16 @@ UserController userController =Get.put(UserController());
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        Get.to(() => ProductDetails(product: widget.product));
+    _analytics.logEvent(name: 'button_details_clicked',
+    parameters: {'screen':'home'},
+    );
+       Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => 
+                ProductDetails(product: widget.product),
+                ),
+            );
       },
       child: Container(
         padding: const EdgeInsets.all(10),
@@ -54,7 +65,7 @@ UserController userController =Get.put(UserController());
                 Center(
                   child: SizedBox(
                     height: AppLayout.getHeight(100),
-                    width: AppLayout.getHeight(200),
+                  width: double.infinity,
                     child: Hero(
                       transitionOnUserGestures: true,
                       tag: widget.product,
@@ -80,17 +91,17 @@ UserController userController =Get.put(UserController());
                           )
                         : const SizedBox(),
                      InkWell(
- onTap: () {
-    favoriteController.addToFavorite(widget.product);
-  },
-  child: Obx(() => Container(
-    width: 40, // Largeur du cercle
-    height: 40, // Hauteur du cercle
-    decoration: BoxDecoration(
+             onTap: () {
+        favoriteController.addToFavorite(widget.product);
+      },
+      child: Obx(() => Container(
+        width: 40, // Largeur du cercle
+        height: 40, // Hauteur du cercle
+        decoration: BoxDecoration(
       shape: BoxShape.circle,
       color: Colors.white, // Couleur du cercle blanc
-    ),
-    child: Center(
+        ),
+        child: Center(
       child: favoriteController.isFavorite(widget.product)
           ? Icon(
               Icons.favorite,
@@ -100,9 +111,9 @@ UserController userController =Get.put(UserController());
               Icons.favorite_border,
               color: Colors.black,
             ),
-    ),
-  )),
-),
+        ),
+      )),
+            ),
                   ],
                 ),
               ],
@@ -150,9 +161,12 @@ UserController userController =Get.put(UserController());
                 ),
                 InkWell(
               onTap: () async {
+                _analytics.logEvent(name: 'button_addTocart_clicked',
+        parameters: {'screen':'home'},
+        );
         // Check if the product is already in the cart
         bool isInCart = await cartController.isProductInCart(widget.product);
-
+            
         if (isInCart) {
           // Product is already in the cart, show snackbar
           Get.snackbar(
@@ -166,7 +180,7 @@ UserController userController =Get.put(UserController());
         } else {
           // Product is not in the cart, add it
           cartController.addProduct(widget.product);
-
+            
           // Optionally, you can show a different snackbar for successful addition
           Get.snackbar(
             'Ajouté au panier',

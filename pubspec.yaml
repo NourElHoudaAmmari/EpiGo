@@ -86,6 +86,15 @@ dependencies:
   flutter_stripe: ^9.5.0+1
   smooth_star_rating_null_safety: ^1.0.4+2
   percent_indicator: ^4.2.3
+  loader_overlay: ^3.0.0
+  dio: ^5.4.0
+  firebase_performance: ^0.9.3+6
+  firebase_crashlytics: ^3.4.6
+  firebase_analytics: ^10.7.2
+  get_it: ^7.6.0
+  awesome_card: ^1.1.7
+  flutter_credit_card: ^4.0.1
+  awesome_dialog: ^3.1.0
   
 
 dev_dependencies:

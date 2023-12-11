@@ -19,7 +19,7 @@ class HomeBindings implements Bindings {
     Get.lazyPut(() => ProductController(), fenix: true);
    // Get.lazyPut(() => OrderController(), fenix: true);
    Get.lazyPut(() => UserController(), fenix: true);
-    Get.lazyPut(() => SearchController(), fenix: true);
+    Get.lazyPut(() => SearchControllerapp(), fenix: true);
        Get.lazyPut(() => ProfileController(), fenix: true);
   }
 }
