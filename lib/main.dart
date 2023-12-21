@@ -39,7 +39,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
- SearchController searchController = Get.put(SearchController());
+ SearchControllerapp searchController = Get.put(SearchControllerapp());
     ProductController productController = Get.put(ProductController());
  CartController cartController = Get.put(CartController());
   FavoriteController favoriteController = Get.put(FavoriteController());
@@ -82,7 +82,7 @@ final FirebaseAnalytics _analytics = FirebaseAnalytics.instance;
             ),
           )),     
           navigatorObservers: [_observer],     
-     home: WelcomeScreen(),
+     home: LoginScreen(),
         initialBinding: BindingsBuilder(() {
         Get.put(AuthentificationRepository());
    

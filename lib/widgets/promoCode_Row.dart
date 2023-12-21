@@ -77,7 +77,7 @@ class PromoCodeRow extends StatelessWidget {
                     Row(
                       children: [
                         Text(
-                         "Expiry Date:",
+                         " Date d'éxpiration:",
                           style: TextStyle(
                               color: Color(0xff53B175),
                               fontSize: 14,

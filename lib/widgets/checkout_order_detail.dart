@@ -17,6 +17,7 @@ class CheckoutOrderDetails extends StatefulWidget {
 }
 
 class _CheckoutOrderDetailsState extends State<CheckoutOrderDetails> {
+
   var _couponText = TextEditingController();
  void _applyCoupon(String couponCode) async {
     // Fetch the coupon details from Firebase based on the provided coupon code
@@ -79,18 +80,27 @@ desc: 'Le coupon a expiré',
         return;
       }
     }
-      final CartController cartController = Get.put(CartController());
+  final CartController cartController = Get.put(CartController());
+
     // Apply the discount to the total
-  double discountPercentage = appliedCoupon.discount / 100.0;
-      double discountAmount = cartController.subTotal * discountPercentage.toDouble();
-    double discountedTotal = cartController.subTotal - discountAmount;
+double discountPercentage = appliedCoupon.discount / 100.0;
 
-    // Update the total in the cart controller
-    cartController.updateTotal(discountedTotal);
+// Explicitly cast cartController.subTotal to double
+double subTotalAsDouble = double.parse(cartController.subTotal);
 
-    // TODO: Show a success message to the user
-    print("Coupon applied successfully!");
+// Calculate the discount amount based on the subTotal
+double discountAmount = subTotalAsDouble * discountPercentage;
+
+// Update the total in the cart controller
+cartController.updateTotal(subTotalAsDouble - discountAmount);
+
+// TODO: Show a success message to the user
+print("Coupon applied successfully!");
+print(discountAmount);
   }
+
+
+  
 
   @override
   Widget build(BuildContext context) {
@@ -123,7 +133,7 @@ Container(
   ),
 ),
         SizedBox(
-  width: 93,
+  width: 98,
   child: ElevatedButton(
     onPressed: () {
       print("coupn code");
@@ -163,6 +173,15 @@ Container(
                 ],
               ),
               const Gap(10),
+                  Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text('Remise: ', style: Styles.textStyle),
+          Text('0.0 DT',
+              style: Styles.headLineStyle4),
+        ],
+      ),
+      const Gap(10),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [

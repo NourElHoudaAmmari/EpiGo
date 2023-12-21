@@ -190,10 +190,10 @@ ListTile(
     ),
   ),
   onTap: (){ 
-     Navigator.push(
+    /* Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => Reviews()),
-            );
+            );*/
   },
 ),
 ListTile(
@@ -214,6 +214,8 @@ ListTile(
 ListTile(
   leading: Icon(Icons.power_settings_new),
   title: Text(
+  
+    
     'Se déconnecter',
     style: TextStyle(
       fontSize: 18,
@@ -221,6 +223,7 @@ ListTile(
     ),
   ),
   onTap:  (){
+    
                     showDialog(
                       context: context,
                       builder: (context){

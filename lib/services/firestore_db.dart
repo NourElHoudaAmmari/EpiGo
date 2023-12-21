@@ -4,6 +4,7 @@ import 'package:epigo_project/controllers/user_controller.dart';
 import 'package:epigo_project/models/CodePromo_model.dart';
 import 'package:epigo_project/models/address_model.dart';
 import 'package:epigo_project/models/delivery_methods.dart';
+import 'package:epigo_project/models/review_model.dart';
 import 'package:epigo_project/repository/authentification_repository.dart';
 import 'package:epigo_project/repository/user_repository.dart';
 import 'package:epigo_project/styles/styles.dart';
@@ -234,14 +235,14 @@ Future<void> addToCart(Product product) async {
 
       // Vérifier si le produit est en stock
       if (!product.availableInStock || product.stockQuantity == null || product.stockQuantity! < product.quantity!) {
-        Get.snackbar(
+       /* Get.snackbar(
           'Stock épuisé',
           'Désolé, ${product.title} est en rupture de stock.',
           snackPosition: SnackPosition.TOP,
           backgroundColor: Colors.red,
           colorText: Styles.whiteColor,
           duration: const Duration(seconds: 3),
-        );
+        );*/
         return;
       }
 
@@ -265,6 +266,7 @@ Future<void> addToCart(Product product) async {
             .update({'quantity': data['quantity'] = data['quantity'] + 1})
             .then((value) => print("User Updated"))
             .catchError((error) => print("Failed to update user: $error"));
+        ;
         return;
       } else {
         userDoc
@@ -629,6 +631,42 @@ Future<void> deselectAllAddresses(String currentAddressId) async {
 
       return retVal;
     });
+  }
+  //reviews
+Future<void> addReview({required ReviewModal review}) async {
+  try {
+    final reviewDoc = FirebaseFirestore.instance.collection('reviews').doc();
+    ReviewModal newReview = ReviewModal(
+      id: reviewDoc.id,
+      user: review.user,
+      rating: review.rating,
+      date: review.date,
+      comment: review.comment,
+    );
+
+    await reviewDoc.set(newReview.toJson());
+  } catch (e, stack) {
+    print("Erreur lors de l'ajout de la revue : $e");
+    // Gérez les erreurs selon vos besoins
+  }
+}
+
+  Future<List<ReviewModal>> getReviews() async {
+    try {
+      QuerySnapshot querySnapshot = await _firestore.collection('reviews').get();
+      List<ReviewModal> reviews = [];
+
+      querySnapshot.docs.forEach((DocumentSnapshot document) {
+        ReviewModal review = ReviewModal.fromDocumentSnapshot(snapshot: document);
+        reviews.add(review);
+      });
+
+      return reviews;
+    } catch (e) {
+      // Handle errors if necessary
+      print('Error getting reviews: $e');
+      return [];
+    }
   }
 }
 

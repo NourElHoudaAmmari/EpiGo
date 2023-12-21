@@ -214,7 +214,7 @@ SizedBox(height: 8,),
             ),
 
             // Wrap your comment section in ExpansionTile
-            ExpansionTile(
+           /* ExpansionTile(
               initiallyExpanded: false, // Set it to true if you want comments to be initially expanded
               title: Text("Commentaires", style: Styles.headLineStyle2),
               children: [
@@ -226,11 +226,11 @@ SizedBox(height: 8,),
                   itemCount: isMore ? reviewList.length : 3,
                   itemBuilder: (context, index) {
                     return ReviewUI(
-                          image: reviewList[index].image,
-                  name: reviewList[index].name,
-                  date: reviewList[index].date,
-                  comment: reviewList[index].comment,
-                  rating: reviewList[index].rating,
+               
+                  name: reviewList[index].name!,
+                  date: reviewList[index].date!,
+                  comment: reviewList[index].comment!,
+                  rating: reviewList[index].rating!,
                      onPressed: () => print("Plus d'action $index"),
                       onTap: () => setState(() {
                         isMore = !isMore;
@@ -246,15 +246,54 @@ SizedBox(height: 8,),
                   },
                 ),
               ],
-            ),
+            ),*/
 
           Padding(
             padding: const EdgeInsets.all(40),
             child: SizedBox(
               height: AppLayout.getHeight(55),
               child: ElevatedButton(
-                onPressed: () {
-                   cartController.addProduct(widget.product);
+                onPressed: () async{
+    // Check if the product is in stock
+    if (!widget.product.availableInStock || widget.product.stockQuantity == 0) {
+      // Product is out of stock, show snackbar
+      Get.snackbar(
+        'Rupture de stock',
+        'Désolé, ${widget.product.title} est en rupture de stock.',
+        snackPosition: SnackPosition.TOP,
+        backgroundColor: Colors.red,
+        colorText: Styles.whiteColor,
+        duration: const Duration(seconds: 3),
+      );
+    } else {
+      // Check if the product is already in the cart
+      bool isInCart = await cartController.isProductInCart(widget.product);
+
+      if (isInCart) {
+        // Product is already in the cart, show snackbar
+        Get.snackbar(
+          'Article déjà dans le panier',
+          '${widget.product.title} existe déjà dans votre panier',
+          snackPosition: SnackPosition.TOP,
+          backgroundColor: Colors.red,
+          colorText: Styles.whiteColor,
+          duration: const Duration(seconds: 3),
+        );
+      } else {
+        // Product is not in the cart, add it
+        cartController.addProduct(widget.product);
+        Get.snackbar(
+          'Ajouté au panier',
+          '${widget.product.title} ajouté au panier',
+          snackPosition: SnackPosition.TOP,
+          backgroundColor: Colors.green,
+          colorText: Styles.whiteColor,
+          duration: const Duration(seconds: 2),
+        );
+
+        // Optionally, you can show a different snackbar for successful addition
+      }
+    }
                 },
                 child: Text('Ajouter au panier',style: TextStyle(color: Colors.black),),
                  style: ButtonStyle(

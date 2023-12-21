@@ -134,7 +134,7 @@ void init() {
       child: Column(
         children: [
           TextFormField(
-             
+             key: const ValueKey('email'),
            controller: emailController,
             keyboardType: TextInputType.emailAddress,
             textInputAction: TextInputAction.next,
@@ -165,7 +165,7 @@ void init() {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: defaultPadding),
             child: TextFormField(
-             
+                key:  const ValueKey('password'),
            controller: passwordController,
   textInputAction: TextInputAction.done,
   obscureText: !_isPasswordVisible, // Toggle password visibility
@@ -233,6 +233,7 @@ void init() {
           Hero(
             tag: "login_btn",
             child: ElevatedButton (
+              key: const ValueKey('connecter'),
               onPressed:(){
                  if (_formKey.currentState!.validate()) {
       if (!isLoginButtonDisabled) {
@@ -257,6 +258,7 @@ void init() {
           ),
           const SizedBox(height: defaultPadding),
           AlreadyHaveAnAccountCheck(
+            key: const ValueKey('createAccount'),
             press: () {
               Navigator.push(
                 context,

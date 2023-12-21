@@ -1,10 +1,13 @@
+import 'package:epigo_project/models/CodePromo_model.dart';
 import 'package:epigo_project/models/cart_model.dart';
 import 'package:epigo_project/models/product_model.dart';
 import 'package:epigo_project/services/firestore_db.dart';
 import 'package:epigo_project/styles/styles.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class CartController extends GetxController {
+     CouponModel? appliedCoupon;
   final _cart = <Cart>[].obs;
   List<Map<String, dynamic>> get myCart => _cart.map((e) => e.toMap()).toList();
   final dynamic _products = [].obs;
@@ -26,9 +29,18 @@ class CartController extends GetxController {
 
 Future addProduct(Product product) async {
     await FirestoreDB().addToCart(product);
-    
+       
 
-    if (product.quantity! > 1) return;
+    if (product.quantity! > 1)
+         Get.snackbar(
+            'Ajouté au panier',
+            '${product.title} ajouté au panier',
+            snackPosition: SnackPosition.TOP,
+            backgroundColor: Colors.green,
+            colorText: Styles.whiteColor,
+            duration: const Duration(seconds: 2),
+          );
+     return;
  
 }
   Future removeProduct(Product product) async {
@@ -70,39 +82,52 @@ Future addProduct(Product product) async {
 
   return shipping;
 }
- get subTotal {
+  get subTotal {
     if (cartList.isEmpty) {
       return '0.000';
     }
     return cartList
-      .map((e) => (e.price - (e.price * e.discount / 100)) * e.quantity!)
-      .reduce((a, b) => a + b)
-      .toStringAsFixed(3);
- }
+        .map((e) =>
+            (e.price - (e.price * e.discount / 100)) * e.quantity!)
+        .reduce((a, b) => a + b)
+        .toStringAsFixed(3);
+  }
+
+  get discountAmount {
+    // Assuming that the discount is already applied to the subTotal
+    num discountPercentage = appliedCoupon?.discount ?? 0.0;
+    double discountAmount = cartList
+        .map((e) =>
+            (e.price - (e.price * discountPercentage / 100)) * e.quantity!)
+        .reduce((a, b) => a + b);
+
+    return discountAmount.toStringAsFixed(3);
+  }
+
   get total {
-      if (cartList.isEmpty) {
+    if (cartList.isEmpty) {
       return '0.000';
-      }
+    }
     var total = cartList
-            .map((e) => (e.price - (e.price * e.discount / 100)) * e.quantity!)
+            .map((e) =>
+                (e.price - (e.price * e.discount / 100)) * e.quantity!)
             .reduce((a, b) => a + b) +
-     calculateShippingFee();
+        calculateShippingFee();
     return total.toStringAsFixed(3);
   }
-Future<Stream<List<Product>>> getCart() async {
-  final cartList = await FirestoreDB().getCart();
-  products.assignAll(cartList as Iterable<Product>);
-  return cartList;
-}
-Future<bool> isProductInCart(Product product) async {
-  return await FirestoreDB().isProductInCart(product.id);
-}
-  void updateTotal(double newTotal) {
-    // You might want to perform additional logic here, if needed
-    // For example, updating some UI elements or triggering other actions
-    total.value = newTotal;
 
-    // Notify all listeners that the value has changed
+  Future<Stream<List<Product>>> getCart() async {
+    final cartList = await FirestoreDB().getCart();
+    products.assignAll(cartList as Iterable<Product>);
+    return cartList;
+  }
+
+  Future<bool> isProductInCart(Product product) async {
+    return await FirestoreDB().isProductInCart(product.id);
+  }
+
+  void updateTotal(double newTotal) {
+    total.value = newTotal.toStringAsFixed(3);
     update();
   }
 }

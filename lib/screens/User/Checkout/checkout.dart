@@ -152,7 +152,7 @@ void initState(){
             }
           },
           ),
-                        const SizedBox(height: 18.0),
+                        const SizedBox(height: 15.0),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [

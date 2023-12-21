@@ -123,7 +123,7 @@ Future<void> fetchBlockedStatus() async {
      
 bottomNavigationBar: BottomAppBar(
         shape: const CircularNotchedRectangle(),
-        color: Colors.white,
+        color: Colors.grey[100],
         child: IconTheme(
           data: IconThemeData(color: Colors.black),
          child: Padding(padding: const EdgeInsets.all(12.0),

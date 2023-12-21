@@ -1,4 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:epigo_project/config/constants.dart';
+import 'package:epigo_project/models/review_model.dart';
 import 'package:epigo_project/styles/styles.dart';
 import 'package:epigo_project/widgets/reviewUi.dart';
 import 'package:flutter/cupertino.dart';
@@ -14,9 +16,41 @@ class Reviews extends StatefulWidget {
 }
 
 class _ReviewsState extends State<Reviews> {
-   bool isMore = false;
-  List<double> ratings = [0.1, 0.3, 0.5, 0.7, 0.9];
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  Future<List<ReviewModal>> getReviews() async {
+    try {
+      QuerySnapshot querySnapshot = await _firestore.collection('reviews').get();
+      List<ReviewModal> reviews = [];
 
+      querySnapshot.docs.forEach((DocumentSnapshot document) {
+        ReviewModal review = ReviewModal.fromDocumentSnapshot(snapshot: document);
+        reviews.add(review);
+      });
+
+      return reviews;
+    } catch (e) {
+      print('Error getting reviews: $e');
+      return [];
+    }
+  }
+ bool isMore = false;
+  List<double> ratings = [0.1, 0.3, 0.5, 0.7, 0.9];
+    late List<ReviewModal> reviews = []; // Initialize the list
+
+  @override
+  void initState() {
+    super.initState();
+    // Fetch reviews when the widget is initialized
+    fetchReviews();
+  }
+
+  // Fetch reviews from Firestore
+  Future<void> fetchReviews() async {
+    List<ReviewModal> fetchedReviews = await getReviews();
+    setState(() {
+      reviews = fetchedReviews;
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -72,7 +106,7 @@ class _ReviewsState extends State<Reviews> {
                     ),
                     SizedBox(height: 16.0),
                     Text(
-                      "${reviewList.length} Avis",
+                      "${reviews.length} Avis",
                       style: TextStyle(
                         fontSize: 20.0,
                         color: kLightColor,
@@ -114,21 +148,18 @@ class _ReviewsState extends State<Reviews> {
             ),
           ),
           Expanded(
-            child: ListView.separated(
+             child: ListView.separated(
               padding: EdgeInsets.only(bottom: 8.0, top: 8.0),
-              itemCount: reviewList.length,
+              itemCount: reviews.length,
               itemBuilder: (context, index) {
+                ReviewModal review = reviews[index];
                 return ReviewUI(
-                  image: reviewList[index].image,
-                  name: reviewList[index].name,
-                  date: reviewList[index].date,
-                  comment: reviewList[index].comment,
-                  rating: reviewList[index].rating,
                   onPressed: () => print("Plus d'action $index"),
                   onTap: () => setState(() {
                     isMore = !isMore;
                   }),
                   isLess: isMore,
+                  review: review,
                 );
               },
               separatorBuilder: (context, index) {

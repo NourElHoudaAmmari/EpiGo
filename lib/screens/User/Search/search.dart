@@ -25,7 +25,7 @@ class ProductSearchPage extends StatefulWidget {
 class _ProductSearchPageState extends State<ProductSearchPage> {
    final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   TextEditingController textController = TextEditingController();
-  SearchController searchController = SearchController();
+  SearchControllerapp searchController = Get.put(SearchControllerapp());
   bool _isBlocked = false;
   Future<void> fetchBlockedStatus() async {
     User? user = FirebaseAuth.instance.currentUser;
@@ -136,6 +136,7 @@ class _ProductSearchPageState extends State<ProductSearchPage> {
                 if (products.isEmpty) {
                   return Center(
                     child: Column(
+                      
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         Image.asset("assets/images/search_fail.png"),
@@ -144,22 +145,26 @@ class _ProductSearchPageState extends State<ProductSearchPage> {
                     ),
                   );
                 }
+                
 
-             return GridView.count(
-                    shrinkWrap: true,
-                      crossAxisCount: 2,
-                      mainAxisSpacing: 20,
-                      crossAxisSpacing: 20,
-                      childAspectRatio: 1 / 1.3,
-                children: List.generate(
-                     products.length,
-                        (index) {
-                          return ProductCard(
-                            product: products[index],
-                          );
-                        },
+             return Padding(
+               padding: const EdgeInsets.all(20),
+               child: GridView.count(
+                   shrinkWrap: true,
+                     crossAxisCount: 2,
+                     mainAxisSpacing: 20,
+                     crossAxisSpacing: 20,
+                    childAspectRatio: 1 / 1.3,
+                  children: List.generate(
+                       products.length,
+                          (index) {
+                            return ProductCard(
+                              product: products[index],
+                            );
+                          },
+                        ),
                       ),
-                    );
+             );
               },
             ),
           ),
