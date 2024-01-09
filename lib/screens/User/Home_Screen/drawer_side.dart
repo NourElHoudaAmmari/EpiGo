@@ -190,10 +190,10 @@ ListTile(
     ),
   ),
   onTap: (){ 
-    /* Navigator.push(
+     Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => Reviews()),
-            );*/
+            );
   },
 ),
 ListTile(

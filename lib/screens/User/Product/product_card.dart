@@ -39,6 +39,7 @@ UserController userController =Get.put(UserController());
   @override
   Widget build(BuildContext context) {
     return InkWell(
+      key: ValueKey('product_card_key'), // Ajoutez cette ligne
       onTap: () {
     _analytics.logEvent(name: 'button_details_clicked',
     parameters: {'screen':'home'},
@@ -163,6 +164,7 @@ UserController userController =Get.put(UserController());
                   ],
                 ),
        InkWell(
+       key: ValueKey('add_to_cart_button'), // Ajoutez cette ligne
   onTap: () async {
     _analytics.logEvent(
       name: 'button_addToCart_clicked',

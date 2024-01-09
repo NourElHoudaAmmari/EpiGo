@@ -17,6 +17,9 @@ class CheckoutOrderDetails extends StatefulWidget {
 }
 
 class _CheckoutOrderDetailsState extends State<CheckoutOrderDetails> {
+    double calculateDiscountAmount(double subTotal, int discountPercentage) {
+    return subTotal * (discountPercentage / 100.0);
+  }
 
   var _couponText = TextEditingController();
  void _applyCoupon(String couponCode) async {
@@ -80,21 +83,25 @@ desc: 'Le coupon a expiré',
         return;
       }
     }
-  final CartController cartController = Get.put(CartController());
+      final CartController cartController = Get.put(CartController());
 
-    // Apply the discount to the total
-double discountPercentage = appliedCoupon.discount / 100.0;
+    double discountPercentage = appliedCoupon.discount / 100.0;
+    double subTotalAsDouble = double.parse(cartController.subTotal);
+    double discountAmount = subTotalAsDouble * discountPercentage;
 
-// Explicitly cast cartController.subTotal to double
-double subTotalAsDouble = double.parse(cartController.subTotal);
-
-// Calculate the discount amount based on the subTotal
-double discountAmount = subTotalAsDouble * discountPercentage;
-
-// Update the total in the cart controller
+// Update the total and discount amount in the cart controller
 cartController.updateTotal(subTotalAsDouble - discountAmount);
+cartController.updateDiscountAmount(discountAmount);
 
-// TODO: Show a success message to the user
+       AwesomeDialog(
+context: context,
+dialogType: DialogType.success,
+animType: AnimType.topSlide,
+showCloseIcon: true,
+title: "Info",
+desc: 'Coupon appliqué avec succès!',
+     ).show();
+//show message to the user
 print("Coupon applied successfully!");
 print(discountAmount);
   }
@@ -176,11 +183,10 @@ Container(
                   Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text('Remise: ', style: Styles.textStyle),
-          Text('0.0 DT',
-              style: Styles.headLineStyle4),
-        ],
-      ),
+      Text('Remise: ', style: Styles.textStyle),
+                  Obx(() => Text('${cartController.discountAmount.value} DT', style: Styles.headLineStyle4)),
+                ],
+              ),
       const Gap(10),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,

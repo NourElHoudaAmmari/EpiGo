@@ -11,6 +11,7 @@ class CartController extends GetxController {
   final _cart = <Cart>[].obs;
   List<Map<String, dynamic>> get myCart => _cart.map((e) => e.toMap()).toList();
   final dynamic _products = [].obs;
+   RxDouble discountAmount = 0.0.obs; // Change RxString to RxDouble
   //var shippingFee = 5.000;
 
   final products = <Product>[].obs;
@@ -93,7 +94,7 @@ Future addProduct(Product product) async {
         .toStringAsFixed(3);
   }
 
-  get discountAmount {
+  /*get discountAmount {
     // Assuming that the discount is already applied to the subTotal
     num discountPercentage = appliedCoupon?.discount ?? 0.0;
     double discountAmount = cartList
@@ -102,6 +103,10 @@ Future addProduct(Product product) async {
         .reduce((a, b) => a + b);
 
     return discountAmount.toStringAsFixed(3);
+  }*/
+  void updateDiscountAmount(double amount) {
+    discountAmount.value = amount;
+    update();
   }
 
   get total {
