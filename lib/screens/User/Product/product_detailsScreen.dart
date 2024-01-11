@@ -83,6 +83,7 @@ void initState() {
                       backgroundColor: Colors.transparent,
                       elevation: 0,
                       leading: IconButton(
+                         key: ValueKey('back_button'),
                           onPressed: () {
                             Navigator.pop(context);
                           },
@@ -253,6 +254,7 @@ SizedBox(height: 8,),
             child: SizedBox(
               height: AppLayout.getHeight(55),
               child: ElevatedButton(
+              key: ValueKey('add_to_cart_button'), // Ajoutez cette ligne
                 onPressed: () async{
     // Check if the product is in stock
     if (!widget.product.availableInStock || widget.product.stockQuantity == 0) {

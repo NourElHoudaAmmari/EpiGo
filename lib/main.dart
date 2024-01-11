@@ -7,6 +7,7 @@ import 'package:epigo_project/controllers/search_controller.dart';
 import 'package:epigo_project/controllers/theme_controller.dart';
 import 'package:epigo_project/controllers/user_controller.dart';
 import 'package:epigo_project/repository/authentification_repository.dart';
+import 'package:epigo_project/screens/User/Home_Screen/home_screen.dart';
 import 'package:epigo_project/screens/User/Login/login_screen.dart';
 import 'package:epigo_project/screens/User/Welcome/welcome_screen.dart';
 import 'package:epigo_project/stripe_payment/stripe_keys.dart';

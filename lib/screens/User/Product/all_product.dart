@@ -32,6 +32,7 @@ class  AllProducts extends StatelessWidget {
                         productController.products.length,
                         (index) {
                           return ProductCard(
+                             key: Key('product_card_$index'), // Unique key for each product card
                             product: productController.products[index],
                           );
                         },

@@ -84,6 +84,7 @@ class _ProductSearchPageState extends State<ProductSearchPage> {
         elevation: 0.0,
         backgroundColor: Styles.primaryColor,
         leading: IconButton(
+             key: ValueKey('back_button'),
           icon: Icon(CupertinoIcons.arrowtriangle_left, color: Colors.black),
           onPressed: () {
             Navigator.of(context).pop();
@@ -98,6 +99,7 @@ class _ProductSearchPageState extends State<ProductSearchPage> {
               children: <Widget>[
             Expanded(
   child: TextField(
+      key: ValueKey('text_search'),
     controller: textController,
     decoration: InputDecoration(
       hintText: "Rechercher un produit",
@@ -139,7 +141,7 @@ class _ProductSearchPageState extends State<ProductSearchPage> {
                       
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        Image.asset("assets/images/search_fail.png"),
+                        Image.asset("assets/images/search_fail.png",key: ValueKey('search_fail_image')),
                         Text("Le produit recherché n'existe pas"),
                       ],
                     ),

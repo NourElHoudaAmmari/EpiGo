@@ -59,6 +59,12 @@ Future<void> fetchBlockedStatus() async {
       }
     }
   }
+    Future<void> _handleRefresh() async {
+    // Place the code here to refresh your data
+    // You can call the necessary functions to reload the data
+    await Future.delayed(Duration(seconds: 2)); // Example of simulated delay
+  }
+
   @override
   Widget build(BuildContext context) {
   
@@ -100,24 +106,25 @@ Future<void> fetchBlockedStatus() async {
             ],
           ),
       ),
-           body: 
-           Obx(
-          () => TabBarView(
-            children: [
-              searchController.searchText == ''
-                  ? AllProducts()
-                  : SearchProduct(),
-              searchController.searchText == ''
-                  ? CategoryProduct(category: 'Fruits')
-                  : SearchProduct(),
-              searchController.searchText == ''
-                  ? CategoryProduct(category: 'Légumes')
-                  : SearchProduct(),
-              searchController.searchText == ''
-                  ? CategoryProduct(category: 'Herbes')
-                  : SearchProduct(),
-            
-            ],
+          body: RefreshIndicator(
+          onRefresh: _handleRefresh,
+          child: Obx(
+            () => TabBarView(
+              children: [
+                searchController.searchText == ''
+                    ? AllProducts()
+                    : SearchProduct(),
+                searchController.searchText == ''
+                    ? CategoryProduct(category: 'Fruits')
+                    : SearchProduct(),
+                searchController.searchText == ''
+                    ? CategoryProduct(category: 'Vegetables')
+                    : SearchProduct(),
+                searchController.searchText == ''
+                    ? CategoryProduct(category: 'Herbs')
+                    : SearchProduct(),
+              ],
+            ),
           ),
         ),
      
@@ -165,6 +172,7 @@ ScaffoldMessenger.of(context).showSnackBar(snackBar);
     ),
     const SizedBox(width: 24,),
      IconButton(
+      key: ValueKey('search_icon'),
       onPressed: (){
          if (_isBlocked) {
       final snackBar = SnackBar(
