@@ -1,16 +1,6 @@
 # epigo_project
 
-A new Flutter project.
+## Application ScreenShots
 
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+![415263187_754268043265130_1522658499465898347_n](https://github.com/NourElHoudaAmmari/EpiGo/assets/113768152/521286ac-b2bc-4b11-98b2-089f7f137d02)  ![414144221_306963979010947_6506799698327235656_n](https://github.com/NourElHoudaAmmari/EpiGo/assets/113768152/3a48ae37-7605-448c-8152-f437dbc85021)
+# SignUp / SignIn Page
